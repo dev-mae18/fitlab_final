@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="18" prefWidth="520" fx:controller="pe.edu.upeu.fitlab_final.controller.ClienteFormController" stylesheets="@style.css" styleClass="form">
+    <padding>
+        <Insets top="26" right="26" bottom="26" left="26"/>
+    </padding>
+    <Label text="Datos de cliente" styleClass="section-title"/>
+    <Separator/>
+    <GridPane hgap="18" vgap="14">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="120"/>
+            <ColumnConstraints prefWidth="290" hgrow="ALWAYS"/>
+        </columnConstraints>
+        <Label text="Nombres" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtNombre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label text="Apellidos" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtApellidos" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="DNI" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtDni" promptText="8 dígitos" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="Edad" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtEdad" promptText="Entre 1 y 120" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <Label text="Género" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="cbxGenero" maxWidth="Infinity" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        <Label text="Estudiante" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="chkEstudiante" text="Aplicar descuento del 10 %" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+        <Label text="Alergias" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtAlergias" promptText="Ninguna" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+    </GridPane>
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="btnCancelar" text="Cancelar" onAction="#handleCancel" cancelButton="true"/>
+        <Button text="Guardar" onAction="#handleSave" defaultButton="true" styleClass="primary"/>
+    </HBox>
+</VBox>

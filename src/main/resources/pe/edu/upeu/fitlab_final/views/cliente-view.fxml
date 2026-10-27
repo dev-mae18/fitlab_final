@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="18" fx:controller="pe.edu.upeu.fitlab_final.controller.ClienteController" stylesheets="@style.css" styleClass="content">
+    <padding>
+        <Insets top="28" right="28" bottom="28" left="28"/>
+    </padding>
+    <Label text="Socios" styleClass="page-title"/>
+    <HBox spacing="10">
+        <TextField fx:id="txtBuscar" promptText="Buscar por DNI o nombre" onAction="#handleSearch" HBox.hgrow="ALWAYS"/>
+        <Button text="Buscar" onAction="#handleSearch"/>
+        <Button text="Nuevo" onAction="#handleNew" styleClass="primary"/>
+    </HBox>
+    <TableView fx:id="tableCliente" VBox.vgrow="ALWAYS">
+        <placeholder>
+            <Label text="No hay registros para mostrar."/>
+        </placeholder>
+        <columns>
+            <TableColumn fx:id="colNumero" text="N°" prefWidth="60"/>
+            <TableColumn fx:id="colNombre" text="Nombres" prefWidth="160"/>
+            <TableColumn fx:id="colApellidos" text="Apellidos" prefWidth="160"/>
+            <TableColumn fx:id="colDni" text="DNI" prefWidth="110"/>
+            <TableColumn fx:id="colEdad" text="Edad" prefWidth="65"/>
+            <TableColumn fx:id="colGenero" text="Género" prefWidth="75"/>
+            <TableColumn fx:id="colEstudiante" text="Estudiante" prefWidth="100"/>
+        </columns>
+    </TableView>
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Ver datos" onAction="#handleVerDatos" styleClass="primary"/>
+        <Button text="Editar seleccionado" onAction="#handleEdit"/>
+        <Button text="Eliminar" onAction="#handleDelete" styleClass="danger"/>
+    </HBox>
+</VBox>

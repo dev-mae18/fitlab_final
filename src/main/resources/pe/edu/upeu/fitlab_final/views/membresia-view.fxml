@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="16" fx:controller="pe.edu.upeu.fitlab_final.controller.MembresiaController" stylesheets="@style.css" styleClass="content">
+    <padding>
+        <Insets top="28" right="28" bottom="28" left="28"/>
+    </padding>
+    <Label text="Membresías" styleClass="page-title"/>
+    <Label text="Asigna planes y administra la continuidad de cada socio." styleClass="subtitle"/>
+    <HBox spacing="10">
+        <TextField fx:id="txtBuscar" promptText="Buscar socio por DNI o nombre" onAction="#handleSearch" HBox.hgrow="ALWAYS"/>
+        <Button text="Buscar" onAction="#handleSearch"/>
+        <Button text="Nueva membresía" onAction="#handleNew" styleClass="primary"/>
+    </HBox>
+    <TableView fx:id="tableMembresia" VBox.vgrow="ALWAYS">
+        <placeholder>
+            <Label text="No hay membresías para mostrar."/>
+        </placeholder>
+        <columns>
+            <TableColumn fx:id="colNumero" text="N°" prefWidth="50"/>
+            <TableColumn fx:id="colCliente" text="Socio" prefWidth="170"/>
+            <TableColumn fx:id="colDni" text="DNI" prefWidth="100"/>
+            <TableColumn fx:id="colPlan" text="Plan" prefWidth="95"/>
+            <TableColumn fx:id="colPrecio" text="Precio" prefWidth="85"/>
+            <TableColumn fx:id="colHorario" text="Horario" prefWidth="90"/>
+            <TableColumn fx:id="colDias" text="Días de asistencia" prefWidth="200"/>
+            <TableColumn fx:id="colEntrenador" text="Entrenador" prefWidth="160"/>
+            <TableColumn fx:id="colVencimiento" text="Vencimiento" prefWidth="110"/>
+            <TableColumn fx:id="colEstado" text="Estado" prefWidth="95"/>
+        </columns>
+    </TableView>
+    <FlowPane hgap="10" vgap="10">
+        <Button text="Editar horario" onAction="#handleEdit"/>
+        <Button text="Renovar" onAction="#handleRenovar" styleClass="primary"/>
+        <Button text="Reactivar" onAction="#handleReactivar"/>
+        <Button text="Migrar plan" onAction="#handleMigrar"/>
+        <Button text="Cancelar membresía" onAction="#handleCancelar" styleClass="danger"/>
+    </FlowPane>
+    <Label text="Renovación desde 3 días antes del vencimiento. Cada membresía ocupa cupo en todos sus días de asistencia: máximo 50 socios por día y turno." styleClass="subtitle" wrapText="true"/>
+</VBox>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="18" fx:controller="pe.edu.upeu.fitlab_final.controller.ComprobanteController" stylesheets="@style.css" styleClass="content">
+    <padding>
+        <Insets top="28" right="28" bottom="28" left="28"/>
+    </padding>
+    <Label text="Comprobantes" styleClass="page-title"/>
+    <Label text="Historial de registros, renovaciones, reactivaciones y cambios de plan." styleClass="subtitle"/>
+    <HBox spacing="10">
+        <TextField fx:id="txtBuscar" promptText="DNI de 8 dígitos o código FBL-1001" onAction="#handleSearch" HBox.hgrow="ALWAYS"/>
+        <Button text="Buscar" onAction="#handleSearch"/>
+        <Button text="Ver todos" onAction="#cargarDatos"/>
+    </HBox>
+    <TableView fx:id="tableComprobante" VBox.vgrow="ALWAYS">
+        <placeholder>
+            <Label text="No hay comprobantes para mostrar."/>
+        </placeholder>
+        <columns>
+            <TableColumn fx:id="colCodigo" text="Código" prefWidth="105"/>
+            <TableColumn fx:id="colCliente" text="Socio" prefWidth="170"/>
+            <TableColumn fx:id="colDni" text="DNI" prefWidth="100"/>
+            <TableColumn fx:id="colTipo" text="Operación" prefWidth="125"/>
+            <TableColumn fx:id="colEstado" text="Estado" prefWidth="110"/>
+            <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="95"/>
+            <TableColumn fx:id="colDescuento" text="Descuento" prefWidth="95"/>
+            <TableColumn fx:id="colTotal" text="Total" prefWidth="95"/>
+            <TableColumn fx:id="colFecha" text="Fecha" prefWidth="185"/>
+        </columns>
+    </TableView>
+    <HBox alignment="CENTER_RIGHT">
+        <Button text="Ver comprobante" onAction="#handleDetalle" styleClass="primary"/>
+    </HBox>
+</VBox>

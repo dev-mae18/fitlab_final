@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="pe.edu.upeu.fitlab_final.controller.LoginController" stylesheets="@style.css" styleClass="login-background" prefWidth="700" prefHeight="560">
+    <VBox spacing="16" maxWidth="360" maxHeight="-Infinity" styleClass="login-card">
+        <padding>
+            <Insets top="36" bottom="36" left="32" right="32"/>
+        </padding>
+        <Label text="FitLab" styleClass="brand"/>
+        <Label text="Gestión de gimnasio" styleClass="subtitle,brand-subtitle"/>
+        <Separator/>
+        <Label text="Iniciar sesión" styleClass="section-title"/>
+        <TextField fx:id="txtUsuario" promptText="Usuario" onAction="#handleLogin"/>
+        <PasswordField fx:id="txtContrasena" promptText="Contraseña" onAction="#handleLogin"/>
+        <Label fx:id="lblMensaje" wrapText="true" styleClass="error-text" minHeight="25"/>
+        <Button fx:id="btnIngresar" text="Ingresar" onAction="#handleLogin" defaultButton="true" maxWidth="Infinity" styleClass="primary"/>
+    </VBox>
+</StackPane>

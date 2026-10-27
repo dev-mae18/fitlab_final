@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="pe.edu.upeu.fitlab_final.controller.MainController" stylesheets="@style.css" prefWidth="1200" prefHeight="760">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="18" styleClass="header">
+            <padding>
+                <Insets top="18" bottom="18" left="26" right="26"/>
+            </padding>
+            <Label text="FitLab" styleClass="brand"/>
+            <Label text="Gestión de gimnasio" styleClass="subtitle,brand-subtitle"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblUsuario"/>
+        </HBox>
+    </top>
+    <left>
+        <VBox spacing="8" prefWidth="220" styleClass="sidebar">
+            <padding>
+                <Insets top="24" bottom="24" left="14" right="14"/>
+            </padding>
+            <Label text="ADMINISTRACIÓN" styleClass="nav-caption"/>
+            <Button text="Inicio" onAction="#showHome" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="Socios" onAction="#showClient" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="Entrenadores" onAction="#showEntrenadores" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="Membresías" onAction="#showMembresias" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="Comprobantes" onAction="#showComprobantes" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="Informes" onAction="#showInformes" styleClass="nav-button" maxWidth="Infinity"/>
+            <Region VBox.vgrow="ALWAYS"/>
+            <Button text="Mi cuenta" onAction="#showCuenta" styleClass="nav-button" maxWidth="Infinity"/>
+            <Button text="Cerrar sesión" onAction="#handleLogout" styleClass="nav-button" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+    <center>
+        <StackPane fx:id="contentArea"/>
+    </center>
+</BorderPane>

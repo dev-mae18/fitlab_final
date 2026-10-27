@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="24" fx:controller="pe.edu.upeu.fitlab_final.controller.HomeController" stylesheets="@style.css" styleClass="content">
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+    <Label text="Bienvenido a FitLab" styleClass="page-title"/>
+    <Label text="Administra socios, membresías y pagos desde un solo lugar." styleClass="subtitle"/>
+    <HBox spacing="20">
+        <VBox spacing="12" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <Label text="Socios registrados"/>
+            <Label fx:id="lblClientes" styleClass="stat-value"/>
+        </VBox>
+        <VBox spacing="12" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <Label text="Membresías activas"/>
+            <Label fx:id="lblMembresias" styleClass="stat-value"/>
+        </VBox>
+        <VBox spacing="12" styleClass="stat-card" HBox.hgrow="ALWAYS">
+            <Label text="Comprobantes"/>
+            <Label fx:id="lblComprobantes" styleClass="stat-value"/>
+        </VBox>
+    </HBox>
+    <VBox spacing="14" styleClass="panel">
+        <Label text="Tu operación diaria" styleClass="section-title"/>
+        <Label text="1. Registra los datos personales en Socios."/>
+        <Label text="2. Asigna un plan, horario y entrenador en Membresías."/>
+        <Label text="3. Consulta los comprobantes y revisa el aforo en Informes."/>
+        <Separator/>
+        <Label text="Planes mensuales: Básico S/ 50 · Premium S/ 80 · VIP S/ 120"/>
+        <Label text="Descuento para estudiantes: 10 % · Duración: 30 días" styleClass="subtitle"/>
+    </VBox>
+</VBox>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="pe.edu.upeu.fitlab_final.controller.InformeController" stylesheets="@style.css" fitToWidth="true" hbarPolicy="NEVER" styleClass="informes" pannable="true">
+    <content>
+        <VBox spacing="22" styleClass="informes-content">
+            <padding>
+                <Insets top="28" right="28" bottom="28" left="28"/>
+            </padding>
+            <HBox spacing="18" alignment="CENTER_LEFT">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Informes" styleClass="page-title"/>
+                    <Label text="Una vista de tus membresías y del espacio disponible en el gimnasio." styleClass="subtitle" wrapText="true"/>
+                </VBox>
+            </HBox>
+            <HBox spacing="14">
+                <VBox spacing="8" prefWidth="190" minWidth="165" maxWidth="Infinity" minHeight="126" HBox.hgrow="ALWAYS" styleClass="informe-card">
+                    <Label text="Membresías activas" styleClass="informe-card-caption"/>
+                    <Label fx:id="lblActivas" text="0" styleClass="informe-card-value"/>
+                    <Label text="Con cupo asignado" styleClass="informe-card-detail"/>
+                </VBox>
+                <VBox spacing="8" prefWidth="190" minWidth="165" maxWidth="Infinity" minHeight="126" HBox.hgrow="ALWAYS" styleClass="informe-card">
+                    <Label text="Membresías inactivas" styleClass="informe-card-caption"/>
+                    <Label fx:id="lblInactivas" text="0" styleClass="informe-card-value,informe-value-muted"/>
+                    <Label text="Sin ocupar cupo" styleClass="informe-card-detail"/>
+                </VBox>
+                <VBox spacing="8" prefWidth="190" minWidth="165" maxWidth="Infinity" minHeight="126" HBox.hgrow="ALWAYS" styleClass="informe-card">
+                    <Label text="Por vencer" styleClass="informe-card-caption"/>
+                    <Label fx:id="lblPorVencer" text="0" styleClass="informe-card-value,informe-value-warning"/>
+                    <Label text="Durante los próximos 3 días" styleClass="informe-card-detail" wrapText="true"/>
+                </VBox>
+                <VBox spacing="8" prefWidth="190" minWidth="165" maxWidth="Infinity" minHeight="126" HBox.hgrow="ALWAYS" styleClass="informe-card">
+                    <Label text="Mayor ocupación" styleClass="informe-card-caption"/>
+                    <Label fx:id="lblOcupacionMaxima" text="0 %" styleClass="informe-card-value"/>
+                    <Label fx:id="lblTurnoMaximo" text="Sin membresías activas" styleClass="informe-card-detail" wrapText="true"/>
+                </VBox>
+            </HBox>
+            <VBox spacing="16" minWidth="510" maxWidth="Infinity" styleClass="informe-panel">
+                    <VBox spacing="5">
+                        <Label text="Aforo por día y turno" styleClass="section-title"/>
+                        <Label text="Cupo máximo: 50 socios por turno en cada día." styleClass="informe-secondary" wrapText="true"/>
+                    </VBox>
+                    <GridPane fx:id="gridAforo" hgap="10" vgap="8" maxWidth="Infinity">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="80" prefWidth="92"/>
+                            <ColumnConstraints minWidth="100" hgrow="ALWAYS"/>
+                            <ColumnConstraints minWidth="100" hgrow="ALWAYS"/>
+                            <ColumnConstraints minWidth="100" hgrow="ALWAYS"/>
+                        </columnConstraints>
+                    </GridPane>
+                    <FlowPane hgap="16" vgap="8" styleClass="aforo-legend">
+                        <HBox alignment="CENTER_LEFT" spacing="6">
+                            <Region minWidth="8" maxWidth="8" minHeight="8" maxHeight="8" styleClass="aforo-dot,aforo-dot-disponible"/>
+                            <Label text="0–49 %" styleClass="informe-secondary"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="6">
+                            <Region minWidth="8" maxWidth="8" minHeight="8" maxHeight="8" styleClass="aforo-dot,aforo-dot-medio"/>
+                            <Label text="50–74 %" styleClass="informe-secondary"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="6">
+                            <Region minWidth="8" maxWidth="8" minHeight="8" maxHeight="8" styleClass="aforo-dot,aforo-dot-alto"/>
+                            <Label text="75–99 %" styleClass="informe-secondary"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="6">
+                            <Region minWidth="8" maxWidth="8" minHeight="8" maxHeight="8" styleClass="aforo-dot,aforo-dot-lleno"/>
+                            <Label text="100 % · Completo" styleClass="informe-secondary"/>
+                        </HBox>
+                    </FlowPane>
+                    <Label text="Cada membresía activa se cuenta en todos sus días de asistencia y en su turno elegido." styleClass="informe-secondary" wrapText="true"/>
+            </VBox>
+            <Label fx:id="lblActualizado" styleClass="informe-updated"/>
+        </VBox>
+    </content>
+</ScrollPane>

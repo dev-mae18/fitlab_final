@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="22" fx:controller="pe.edu.upeu.fitlab_final.controller.CuentaController" stylesheets="@style.css" styleClass="content">
+    <padding>
+        <Insets top="28" right="28" bottom="28" left="28"/>
+    </padding>
+    <Label text="Mi cuenta" styleClass="page-title"/>
+    <Label fx:id="lblUsuario" styleClass="subtitle"/>
+    <VBox spacing="15" maxWidth="450" styleClass="panel">
+        <Label text="Cambiar contraseña" styleClass="section-title"/>
+        <PasswordField fx:id="txtActual" promptText="Contraseña actual"/>
+        <PasswordField fx:id="txtNueva" promptText="Nueva contraseña"/>
+        <PasswordField fx:id="txtConfirmacion" promptText="Confirmar nueva contraseña" onAction="#handleGuardar"/>
+        <Button text="Guardar contraseña" onAction="#handleGuardar" styleClass="primary"/>
+    </VBox>
+</VBox>

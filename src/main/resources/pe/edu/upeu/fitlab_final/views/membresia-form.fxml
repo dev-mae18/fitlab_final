@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="18" prefWidth="640" fx:controller="pe.edu.upeu.fitlab_final.controller.MembresiaFormController" stylesheets="@style.css" styleClass="form">
+    <padding>
+        <Insets top="26" right="26" bottom="26" left="26"/>
+    </padding>
+    <Label text="Datos de membresía" styleClass="section-title"/>
+    <GridPane hgap="18" vgap="13">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="140"/>
+            <ColumnConstraints prefWidth="420" hgrow="ALWAYS"/>
+        </columnConstraints>
+        <Label text="Socio" GridPane.rowIndex="0"/>
+        <ComboBox fx:id="cbxCliente" promptText="Socios sin membresía" onAction="#actualizarImporte" maxWidth="Infinity" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label text="Plan" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="cbxPlan" onAction="#actualizarImporte" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="Horario" GridPane.rowIndex="2"/>
+        <ComboBox fx:id="cbxHorario" maxWidth="Infinity" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="Días de asistencia" GridPane.rowIndex="3"/>
+        <ComboBox fx:id="cbxTipoDias" promptText="Seleccione los días de asistencia" maxWidth="Infinity" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <CheckBox fx:id="chkEntrenador" text="Con entrenador" onAction="#handleEntrenador" GridPane.rowIndex="4" GridPane.columnSpan="2"/>
+        <Label text="Entrenador" GridPane.rowIndex="5"/>
+        <ComboBox fx:id="cbxEntrenador" disable="true" maxWidth="Infinity" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+    </GridPane>
+    <Label fx:id="lblImporte" wrapText="true" styleClass="subtitle"/>
+    <Label text="El horario elegido se aplica a todos sus días de asistencia. Se comprueba un cupo en cada día." wrapText="true" styleClass="subtitle"/>
+    <Label fx:id="lblNota" wrapText="true" styleClass="subtitle"/>
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="btnCancelar" text="Cancelar" onAction="#handleCancel" cancelButton="true"/>
+        <Button text="Guardar" onAction="#handleSave" defaultButton="true" styleClass="primary"/>
+    </HBox>
+</VBox>
