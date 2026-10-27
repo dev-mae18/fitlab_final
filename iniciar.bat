@@ -7,3 +7,6 @@ if defined JAVA_HOME set "JAVA_EXE=%JAVA_HOME%\bin\java.exe"
 "%JAVA_EXE%" -Dmaven.multiModuleProjectDirectory="%CD%" -classpath "%~dp0.mvn\wrapper\maven-wrapper.jar" org.apache.maven.wrapper.MavenWrapperMain javafx:run
 if errorlevel 1 pause
 endlocal
+
+
+
