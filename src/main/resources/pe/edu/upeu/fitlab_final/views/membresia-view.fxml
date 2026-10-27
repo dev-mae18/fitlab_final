@@ -23,6 +23,7 @@
             <TableColumn fx:id="colDni" text="DNI" prefWidth="100"/>
             <TableColumn fx:id="colPlan" text="Plan" prefWidth="95"/>
             <TableColumn fx:id="colPrecio" text="Precio" prefWidth="85"/>
+            <TableColumn fx:id="colTiempo" text="Tiempo" prefWidth="85"/>
             <TableColumn fx:id="colHorario" text="Horario" prefWidth="90"/>
             <TableColumn fx:id="colDias" text="Días de asistencia" prefWidth="200"/>
             <TableColumn fx:id="colEntrenador" text="Entrenador" prefWidth="160"/>
@@ -37,5 +38,5 @@
         <Button text="Migrar plan" onAction="#handleMigrar"/>
         <Button text="Cancelar membresía" onAction="#handleCancelar" styleClass="danger"/>
     </FlowPane>
-    <Label text="Renovación desde 3 días antes del vencimiento. Cada membresía ocupa cupo en todos sus días de asistencia: máximo 50 socios por día y turno." styleClass="subtitle" wrapText="true"/>
+    <Label text="Las membresías de 2 a 12 meses solo permiten migrar el plan; no se pueden renovar ni cancelar. Cada membresía ocupa cupo en todos sus días de asistencia: máximo 50 socios por día y turno." styleClass="subtitle" wrapText="true"/>
 </VBox>

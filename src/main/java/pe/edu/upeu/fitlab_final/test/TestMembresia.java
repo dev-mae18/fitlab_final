@@ -49,6 +49,7 @@ public class TestMembresia {
         }
         System.out.println("INICIO: " + membresia.getFechaInicio());
         System.out.println("VENCIMIENTO: " + membresia.getFechaVencimiento());
+        System.out.println("TIEMPO: " + membresia.getMeses() + (membresia.getMeses() == 1 ? " MES" : " MESES"));
         System.out.println("ACTIVA: " + membresia.isActiva());
         System.out.println("RENOVACIONES: " + membresia.getRenovaciones());
         System.out.println("************");

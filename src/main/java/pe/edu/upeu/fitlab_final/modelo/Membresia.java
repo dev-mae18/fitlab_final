@@ -16,12 +16,13 @@ public class Membresia {
     private final ObjectProperty<LocalDate> fechaVencimiento = new SimpleObjectProperty<>();
     private final BooleanProperty activa = new SimpleBooleanProperty();
     private final IntegerProperty renovaciones = new SimpleIntegerProperty();
+    private final IntegerProperty meses = new SimpleIntegerProperty(1);
     private final IntegerProperty idUsuario = new SimpleIntegerProperty();
 
     public Membresia() {
     }
 
-    public Membresia(int idmembresia, Cliente cliente, Plan plan, Entrenador entrenador, String horario, String tipoDias, LocalDate fechaInicio, LocalDate fechaVencimiento, boolean activa, int renovaciones, int idUsuario) {
+    public Membresia(int idmembresia, Cliente cliente, Plan plan, Entrenador entrenador, String horario, String tipoDias, LocalDate fechaInicio, LocalDate fechaVencimiento, boolean activa, int renovaciones, int meses, int idUsuario) {
         setIdmembresia(idmembresia);
         setCliente(cliente);
         setPlan(plan);
@@ -32,6 +33,7 @@ public class Membresia {
         setFechaVencimiento(fechaVencimiento);
         setActiva(activa);
         setRenovaciones(renovaciones);
+        setMeses(meses);
         setIdUsuario(idUsuario);
     }
 
@@ -188,6 +190,32 @@ public class Membresia {
 
     public final IntegerProperty renovacionesProperty() {
         return renovaciones;
+    }
+
+    public final int getMeses() {
+        return meses.get();
+    }
+
+    public final void setMeses(int value) {
+        meses.set(value);
+    }
+
+    public final IntegerProperty mesesProperty() {
+        return meses;
+    }
+
+    public long getDiasRestantes() {
+        if (getFechaVencimiento() == null) return 0;
+        long dias = getFechaVencimiento().toEpochDay() - LocalDate.now().toEpochDay();
+        if (dias < 0) dias = 0;
+        return dias;
+    }
+
+    public double calcularImporteMigracion(Plan nuevoPlan) {
+        if (getPlan() == null || nuevoPlan == null || getPlan().getDuracionDias() <= 0) return 0;
+        double diferencia = nuevoPlan.getPrecio() - getPlan().getPrecio();
+        if (diferencia < 0) diferencia = 0;
+        return diferencia * getDiasRestantes() / getPlan().getDuracionDias();
     }
 
     public final int getIdUsuario() {

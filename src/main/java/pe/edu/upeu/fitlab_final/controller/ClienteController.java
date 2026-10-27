@@ -114,12 +114,15 @@ public class ClienteController {
             if (!membresia.isActiva()) estado = "INACTIVA";
             else if (membresia.getFechaVencimiento().isBefore(LocalDate.now())) estado = "VENCIDA";
             DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            double descuento = cliente.calcularDescuento(membresia.getPlan().getPrecio());
+            double subtotal = membresia.getPlan().getPrecio() * membresia.getMeses();
+            double descuento = cliente.calcularDescuento(subtotal);
             detalle += "Estado: " + estado + "\n";
             detalle += "Plan: " + membresia.getPlan().getNombre() + "\n";
-            detalle += String.format("Precio: S/ %.2f%n", membresia.getPlan().getPrecio());
+            detalle += String.format("Precio mensual: S/ %.2f%n", membresia.getPlan().getPrecio());
+            detalle += "Tiempo contratado: " + (membresia.getMeses() == 1 ? "1 mes" : membresia.getMeses() + " meses") + "\n";
+            detalle += String.format("Subtotal: S/ %.2f%n", subtotal);
             detalle += String.format("Descuento: S/ %.2f%n", descuento);
-            detalle += String.format("Total: S/ %.2f%n", membresia.getPlan().getPrecio() - descuento);
+            detalle += String.format("Total: S/ %.2f%n", subtotal - descuento);
             detalle += "Horario: " + Entrenador.describirTurno(membresia.getHorario()) + "\n";
             detalle += "Días: " + Membresia.describirDias(membresia.getTipoDias()) + "\n";
             if (membresia.getEntrenador() == null) {

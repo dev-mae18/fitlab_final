@@ -37,6 +37,7 @@ public class MembresiaController {
     @FXML private TableColumn<Membresia, String> colDni;
     @FXML private TableColumn<Membresia, String> colPlan;
     @FXML private TableColumn<Membresia, String> colPrecio;
+    @FXML private TableColumn<Membresia, String> colTiempo;
     @FXML private TableColumn<Membresia, String> colHorario;
     @FXML private TableColumn<Membresia, String> colDias;
     @FXML private TableColumn<Membresia, String> colEntrenador;
@@ -66,6 +67,7 @@ public class MembresiaController {
         colDni.setCellValueFactory(c -> c.getValue().getCliente().dniProperty());
         colPlan.setCellValueFactory(c -> c.getValue().getPlan().nombreProperty());
         colPrecio.setCellValueFactory(c -> new SimpleStringProperty(String.format("S/ %.2f", c.getValue().getPlan().getPrecio())));
+        colTiempo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getMeses() == 1 ? "1 mes" : c.getValue().getMeses() + " meses"));
         colHorario.setCellValueFactory(c -> new SimpleStringProperty(Entrenador.describirTurno(c.getValue().getHorario())));
         colDias.setCellValueFactory(c -> new SimpleStringProperty(Membresia.describirDias(c.getValue().getTipoDias())));
         colEntrenador.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEntrenador() == null ? "Sin entrenador" : c.getValue().getEntrenador().getNombre() + " " + c.getValue().getEntrenador().getApellidos()));
@@ -159,7 +161,6 @@ public class MembresiaController {
     private boolean confirmar(String accion, Membresia m) {
         String mensaje = "¿Desea " + accion.toLowerCase() + " la membresía de " + m.getCliente().getNombre() + " " + m.getCliente().getApellidos() + "?";
         if ("Cancelar".equals(accion)) mensaje += "\n\nSe anulará el último comprobante de pago asociado, si existe." + detalleComprobante(m);
-        if ("Migrar".equals(accion) && m.getFechaVencimiento().isBefore(LocalDate.now())) mensaje += "\n\nEl cambio de plan no renueva la vigencia. Use Renovar para iniciar un nuevo periodo.";
         return UtilAlerts.mostrarAlerts("Confirmar " + accion, mensaje, "CONFIRMATION").showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK;
     }
 
@@ -169,6 +170,10 @@ public class MembresiaController {
         if (m == null) return;
         if (!m.isActiva()) {
             informar("Membresía inactiva", "La membresía ya se encuentra inactiva." + detalleComprobante(m));
+            return;
+        }
+        if (m.getMeses() >= 2) {
+            informar("Cancelación no disponible", "Las membresías contratadas por 2 meses o más no se pueden cancelar. Solo se permite migrar el plan.");
             return;
         }
         if (!confirmar("Cancelar", m)) return;
@@ -208,10 +213,11 @@ public class MembresiaController {
         Boolean conservarVigencia = elegirVigencia(m);
         if (conservarVigencia == null) return;
         LocalDate inicio = conservarVigencia ? m.getFechaInicio() : LocalDate.now();
-        LocalDate vencimiento = conservarVigencia ? m.getFechaVencimiento() : inicio.plusDays(m.getPlan().getDuracionDias());
+        LocalDate vencimiento = conservarVigencia ? m.getFechaVencimiento() : inicio.plusDays((long) m.getPlan().getDuracionDias() * m.getMeses());
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        double total = m.getPlan().getPrecio() - m.getCliente().calcularDescuento(m.getPlan().getPrecio());
-        String mensaje = "¿Reactivar la membresía de " + m.getCliente().getNombre() + " " + m.getCliente().getApellidos() + "?\n\nVigencia: " + inicio.format(formato) + " – " + vencimiento.format(formato) + ".\nPlan: " + m.getPlan().getNombre() + String.format(".\nNuevo pago: S/ %.2f.", total) + "\nSe generará un nuevo comprobante de pago en estado Enviado.";
+        double subtotal = m.getPlan().getPrecio() * m.getMeses();
+        double total = subtotal - m.getCliente().calcularDescuento(subtotal);
+        String mensaje = "¿Reactivar la membresía de " + m.getCliente().getNombre() + " " + m.getCliente().getApellidos() + "?\n\nVigencia: " + inicio.format(formato) + " – " + vencimiento.format(formato) + ".\nPlan: " + m.getPlan().getNombre() + ".\nTiempo: " + (m.getMeses() == 1 ? "1 mes" : m.getMeses() + " meses") + String.format(".\nNuevo pago: S/ %.2f.", total) + "\nSe generará un nuevo comprobante de pago en estado Enviado.";
         Alert confirmacion = UtilAlerts.mostrarAlerts("Confirmar reactivación", mensaje, "CONFIRMATION");
         confirmacion.initOwner(tableMembresia.getScene().getWindow());
         if (confirmacion.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
@@ -228,7 +234,7 @@ public class MembresiaController {
         dialog.initOwner(tableMembresia.getScene().getWindow());
         dialog.setTitle("Vigencia de reactivación");
         dialog.setHeaderText("Elija la vigencia de la membresía");
-        String texto = "Vigencia original: " + m.getFechaInicio().format(formato) + " – " + m.getFechaVencimiento().format(formato) + ".\nDesde hoy: " + hoy.format(formato) + " – " + hoy.plusDays(m.getPlan().getDuracionDias()).format(formato) + ".";
+        String texto = "Vigencia original: " + m.getFechaInicio().format(formato) + " – " + m.getFechaVencimiento().format(formato) + ".\nDesde hoy: " + hoy.format(formato) + " – " + hoy.plusDays((long) m.getPlan().getDuracionDias() * m.getMeses()).format(formato) + ".";
         boolean vencida = m.getFechaVencimiento().isBefore(hoy);
         if (vencida) texto += "\n\nLa vigencia original ya venció. Puede iniciar desde hoy o cancelar para elegir una nueva membresía.";
         Label fechas = new Label(texto);
@@ -249,6 +255,10 @@ public class MembresiaController {
         if (m == null) return;
         if (!m.isActiva()) {
             informar("Membresía inactiva", "Use la opción Reactivar para volver a poner vigente esta membresía.");
+            return;
+        }
+        if (m.getMeses() >= 2) {
+            informar("Renovación no disponible", "Las membresías contratadas por 2 meses o más no se pueden renovar. Solo se permite migrar el plan.");
             return;
         }
         if (m.getFechaVencimiento().isAfter(LocalDate.now().plusDays(3))) {
@@ -280,7 +290,7 @@ public class MembresiaController {
             informar("Planes disponibles", "No hay otros planes disponibles para esta membresía.");
             return;
         }
-        ChoiceDialog<Plan> dialog = new ChoiceDialog<>(planes.getFirst(), planes);
+        ChoiceDialog<Plan> dialog = new ChoiceDialog<>(planes.get(0), planes);
         dialog.initOwner(tableMembresia.getScene().getWindow());
         dialog.setTitle("Migrar plan");
         dialog.setHeaderText("Seleccione el nuevo plan de " + m.getCliente().getNombre());
@@ -288,7 +298,13 @@ public class MembresiaController {
         Optional<Plan> elegido = dialog.showAndWait();
         if (elegido.isPresent()) {
             Plan plan = elegido.get();
-            if (!confirmar("Migrar", m)) return;
+            double subtotal = m.calcularImporteMigracion(plan);
+            double descuento = m.getCliente().calcularDescuento(subtotal);
+            double total = subtotal - descuento;
+            String mensaje = "¿Migrar la membresía de " + m.getCliente().getNombre() + " " + m.getCliente().getApellidos() + " al plan " + plan.getNombre() + "?\n\nDías restantes: " + m.getDiasRestantes() + ".\nDiferencia proporcional: " + String.format("S/ %.2f", subtotal) + ".\nDescuento: " + String.format("S/ %.2f", descuento) + ".\nImporte a pagar: " + String.format("S/ %.2f", total) + ".\nLa fecha de vencimiento no cambiará y se emitirá una boleta de migración por ese importe.";
+            Alert confirmacion = UtilAlerts.mostrarAlerts("Confirmar migración", mensaje, "CONFIRMATION");
+            confirmacion.initOwner(tableMembresia.getScene().getWindow());
+            if (confirmacion.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
             boolean migrada = membresiaDao.migrarPlan(m, plan);
             resultado(migrada, migrada ? "Plan actualizado a " + plan.getNombre() + "." + detalleComprobante(m) : "", "No se pudo cambiar el plan. Compruebe que siga disponible y vuelva a intentarlo.");
         }
@@ -297,7 +313,7 @@ public class MembresiaController {
     private String detalleComprobante(Membresia membresia) {
         List<Comprobante> comprobantes = comprobanteDao.searchByDni(membresia.getCliente().getDni());
         if (comprobantes.isEmpty()) return "\nNo tiene comprobantes de pago asociados.";
-        Comprobante ultimo = comprobantes.getFirst();
+        Comprobante ultimo = comprobantes.get(0);
         return "\nComprobante de pago " + ultimo.getCodigo() + ": " + ultimo.getEstado() + ".";
     }
 

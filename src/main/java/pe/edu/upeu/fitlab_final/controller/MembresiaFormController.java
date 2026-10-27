@@ -21,6 +21,7 @@ import java.util.List;
 public class MembresiaFormController {
     @FXML private ComboBox<Cliente> cbxCliente;
     @FXML private ComboBox<Plan> cbxPlan;
+    @FXML private ComboBox<String> cbxMeses;
     @FXML private ComboBox<Entrenador> cbxEntrenador;
     @FXML private CheckBox chkEntrenador;
     @FXML private ComboBox<String> cbxHorario;
@@ -38,6 +39,11 @@ public class MembresiaFormController {
     @FXML
     public void initialize() {
         cbxPlan.setItems(FXCollections.observableArrayList(planDao.listAll()));
+        for (int i = 1; i <= 12; i++) {
+            if (i == 1) cbxMeses.getItems().add("1 mes");
+            else cbxMeses.getItems().add(i + " meses");
+        }
+        cbxMeses.setValue("1 mes");
         cbxEntrenador.setItems(FXCollections.observableArrayList(entrenadorDao.listAll()));
         cbxHorario.getItems().addAll("MAÑANA", "TARDE", "NOCHE");
         cbxTipoDias.getItems().addAll("Lunes, miércoles y viernes", "Martes, jueves y sábado", "Todos los días");
@@ -86,6 +92,9 @@ public class MembresiaFormController {
             cbxPlan.setValue(planSeleccionado);
             cbxCliente.setDisable(true);
             cbxPlan.setDisable(true);
+            if (m.getMeses() == 1) cbxMeses.setValue("1 mes");
+            else cbxMeses.setValue(m.getMeses() + " meses");
+            cbxMeses.setDisable(true);
             cbxHorario.setValue(Entrenador.describirTurno(m.getHorario()));
             cbxTipoDias.setValue(Membresia.describirDias(m.getTipoDias()));
             chkEntrenador.setSelected(m.getEntrenador() != null);
@@ -107,6 +116,7 @@ public class MembresiaFormController {
     public void setNuevaMembresia(Membresia anterior) {
         setMembresia(anterior);
         cbxPlan.setDisable(false);
+        cbxMeses.setDisable(false);
         lblNota.setText("La nueva membresía comienza hoy. Puede elegir el plan, horario y días de asistencia; se generará un nuevo comprobante de pago.");
     }
 
@@ -119,17 +129,19 @@ public class MembresiaFormController {
     private void actualizarImporte() {
         Cliente c = cbxCliente.getValue();
         Plan p = cbxPlan.getValue();
-        if (c == null || p == null) {
-            lblImporte.setText("Seleccione socio y plan para ver el importe.");
+        if (c == null || p == null || cbxMeses.getValue() == null) {
+            lblImporte.setText("Seleccione socio, plan y tiempo para ver el importe.");
             return;
         }
-        double descuento = c.calcularDescuento(p.getPrecio());
-        lblImporte.setText(String.format("Mensualidad: S/ %.2f · Descuento: S/ %.2f · Total: S/ %.2f", p.getPrecio(), descuento, p.getPrecio() - descuento));
+        int meses = Integer.parseInt(cbxMeses.getValue().split(" ")[0]);
+        double subtotal = p.getPrecio() * meses;
+        double descuento = c.calcularDescuento(subtotal);
+        lblImporte.setText(String.format("Precio mensual: S/ %.2f · Tiempo: %s · Subtotal: S/ %.2f · Descuento: S/ %.2f · Total: S/ %.2f", p.getPrecio(), cbxMeses.getValue(), subtotal, descuento, subtotal - descuento));
     }
 
     private boolean validate() {
-        if (cbxCliente.getValue() == null || cbxPlan.getValue() == null || cbxHorario.getValue() == null || cbxTipoDias.getValue() == null || (chkEntrenador.isSelected() && cbxEntrenador.getValue() == null)) {
-            UtilAlerts.mostrarAlerts("Validación", "Seleccione socio, plan, horario y días de asistencia; también entrenador si corresponde.", "WARNING").showAndWait();
+        if (cbxCliente.getValue() == null || cbxPlan.getValue() == null || cbxMeses.getValue() == null || cbxHorario.getValue() == null || cbxTipoDias.getValue() == null || (chkEntrenador.isSelected() && cbxEntrenador.getValue() == null)) {
+            UtilAlerts.mostrarAlerts("Validación", "Seleccione socio, plan, tiempo, horario y días de asistencia; también entrenador si corresponde.", "WARNING").showAndWait();
             return false;
         }
         if (chkEntrenador.isSelected() && !cbxHorario.getValue().equals(Entrenador.describirTurno(cbxEntrenador.getValue().getTurno()))) {
@@ -149,6 +161,7 @@ public class MembresiaFormController {
             }
             membresia.setCliente(cbxCliente.getValue());
             membresia.setPlan(cbxPlan.getValue());
+            membresia.setMeses(Integer.parseInt(cbxMeses.getValue().split(" ")[0]));
             membresia.setEntrenador(chkEntrenador.isSelected() ? cbxEntrenador.getValue() : null);
             String horario = cbxHorario.getValue();
             if ("MAÑANA".equals(horario)) horario = "MANANA";

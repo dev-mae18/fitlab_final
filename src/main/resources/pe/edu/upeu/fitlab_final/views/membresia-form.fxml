@@ -16,13 +16,15 @@
         <ComboBox fx:id="cbxCliente" promptText="Socios sin membresía" onAction="#actualizarImporte" maxWidth="Infinity" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
         <Label text="Plan" GridPane.rowIndex="1"/>
         <ComboBox fx:id="cbxPlan" onAction="#actualizarImporte" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-        <Label text="Horario" GridPane.rowIndex="2"/>
-        <ComboBox fx:id="cbxHorario" maxWidth="Infinity" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-        <Label text="Días de asistencia" GridPane.rowIndex="3"/>
-        <ComboBox fx:id="cbxTipoDias" promptText="Seleccione los días de asistencia" maxWidth="Infinity" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-        <CheckBox fx:id="chkEntrenador" text="Con entrenador" onAction="#handleEntrenador" GridPane.rowIndex="4" GridPane.columnSpan="2"/>
-        <Label text="Entrenador" GridPane.rowIndex="5"/>
-        <ComboBox fx:id="cbxEntrenador" disable="true" maxWidth="Infinity" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+        <Label text="Tiempo" GridPane.rowIndex="2"/>
+        <ComboBox fx:id="cbxMeses" onAction="#actualizarImporte" maxWidth="Infinity" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="Horario" GridPane.rowIndex="3"/>
+        <ComboBox fx:id="cbxHorario" maxWidth="Infinity" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <Label text="Días de asistencia" GridPane.rowIndex="4"/>
+        <ComboBox fx:id="cbxTipoDias" promptText="Seleccione los días de asistencia" maxWidth="Infinity" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        <CheckBox fx:id="chkEntrenador" text="Con entrenador" onAction="#handleEntrenador" GridPane.rowIndex="5" GridPane.columnSpan="2"/>
+        <Label text="Entrenador" GridPane.rowIndex="6"/>
+        <ComboBox fx:id="cbxEntrenador" disable="true" maxWidth="Infinity" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
     </GridPane>
     <Label fx:id="lblImporte" wrapText="true" styleClass="subtitle"/>
     <Label text="El horario elegido se aplica a todos sus días de asistencia. Se comprueba un cupo en cada día." wrapText="true" styleClass="subtitle"/>

@@ -32,7 +32,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                 if (!entrenadorCompatible(cn, actual)) return flag;
                 if (!aforoDisponible(cn, actual)) return flag;
                 if (contarComprobantes(cn) >= 10000) return flag;
-                String query = "INSERT INTO membresias(idcliente,idplan,identrenador,horario,tipoDias,fechaInicio,fechaVencimiento,activa,renovaciones,idusuario) VALUES(?,?,?,?,?,?,?,?,?,?)";
+                String query = "INSERT INTO membresias(idcliente,idplan,identrenador,horario,tipoDias,fechaInicio,fechaVencimiento,activa,renovaciones,meses,idusuario) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
                 try (PreparedStatement st = cn.prepareStatement(query)) {
                     st.setInt(1, actual.getCliente().getIdcliente());
                     st.setInt(2, actual.getPlan().getIdplan());
@@ -44,13 +44,14 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                     st.setString(7, actual.getFechaVencimiento().toString());
                     st.setBoolean(8, actual.isActiva());
                     st.setInt(9, actual.getRenovaciones());
-                    st.setInt(10, actual.getIdUsuario());
+                    st.setInt(10, actual.getMeses());
+                    st.setInt(11, actual.getIdUsuario());
                     st.executeUpdate();
                 }
                 try (Statement st = cn.createStatement(); ResultSet rs = st.executeQuery("SELECT last_insert_rowid()")) {
                     if (rs.next()) actual.setIdmembresia(rs.getInt(1));
                 }
-                generarComprobante(cn, actual, "REGISTRO");
+                generarComprobante(cn, actual, "REGISTRO", actual.getPlan().getPrecio() * actual.getMeses());
                 cn.commit();
                 flag = true;
                 e.setIdmembresia(actual.getIdmembresia());
@@ -108,7 +109,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
             cn.setAutoCommit(false);
             try {
                 Membresia actual = buscar(cn, e.getIdmembresia());
-                if (actual == null || !actual.isActiva()) return flag;
+                if (actual == null || !actual.isActiva() || actual.getMeses() >= 2) return flag;
                 actual.setIdUsuario(e.getIdUsuario());
                 actual.setActiva(false);
                 if (actual.getDiasAsistencia().isEmpty()) return flag;
@@ -171,7 +172,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                     }
                     st.executeUpdate();
                 }
-                generarComprobante(cn, actual, "REACTIVACION");
+                generarComprobante(cn, actual, "REACTIVACION", actual.getPlan().getPrecio() * actual.getMeses());
                 cn.commit();
                 flag = true;
             } finally {
@@ -200,12 +201,14 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                 actual.setTipoDias(e.getTipoDias());
                 actual.setEntrenador(e.getEntrenador());
                 actual.setRenovaciones(0);
+                actual.setMeses(e.getMeses());
+                if (actual.getMeses() < 1 || actual.getMeses() > 12) return flag;
                 iniciarPeriodo(actual);
                 if (actual.getDiasAsistencia().isEmpty()) return flag;
                 if (!entrenadorCompatible(cn, actual)) return flag;
                 if (!aforoDisponible(cn, actual)) return flag;
                 if (contarComprobantes(cn) >= 10000) return flag;
-                String query = "UPDATE membresias SET idplan=?,identrenador=?,horario=?,tipoDias=?,fechaInicio=?,fechaVencimiento=?,activa=?,renovaciones=?,idusuario=? WHERE idmembresia=?";
+                String query = "UPDATE membresias SET idplan=?,identrenador=?,horario=?,tipoDias=?,fechaInicio=?,fechaVencimiento=?,activa=?,renovaciones=?,meses=?,idusuario=? WHERE idmembresia=?";
                 try (PreparedStatement st = cn.prepareStatement(query)) {
                     st.setInt(1, actual.getPlan().getIdplan());
                     if (actual.getEntrenador() == null) st.setNull(2, Types.INTEGER);
@@ -216,11 +219,12 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                     st.setString(6, actual.getFechaVencimiento().toString());
                     st.setBoolean(7, actual.isActiva());
                     st.setInt(8, actual.getRenovaciones());
-                    st.setInt(9, actual.getIdUsuario());
-                    st.setInt(10, actual.getIdmembresia());
+                    st.setInt(9, actual.getMeses());
+                    st.setInt(10, actual.getIdUsuario());
+                    st.setInt(11, actual.getIdmembresia());
                     st.executeUpdate();
                 }
-                generarComprobante(cn, actual, "REGISTRO");
+                generarComprobante(cn, actual, "REGISTRO", actual.getPlan().getPrecio() * actual.getMeses());
                 cn.commit();
                 flag = true;
             } finally {
@@ -240,7 +244,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
             cn.setAutoCommit(false);
             try {
                 Membresia actual = buscar(cn, e.getIdmembresia());
-                if (actual == null || !actual.isActiva()) return flag;
+                if (actual == null || !actual.isActiva() || actual.getMeses() >= 2) return flag;
                 actual.setIdUsuario(e.getIdUsuario());
                 if (ChronoUnit.DAYS.between(LocalDate.now(), actual.getFechaVencimiento()) > 3) return flag;
                 iniciarPeriodo(actual);
@@ -259,7 +263,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                     st.setInt(6, actual.getIdmembresia());
                     st.executeUpdate();
                 }
-                generarComprobante(cn, actual, "RENOVACION");
+                generarComprobante(cn, actual, "RENOVACION", actual.getPlan().getPrecio());
                 cn.commit();
                 flag = true;
             } finally {
@@ -283,6 +287,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                 actual.setIdUsuario(e.getIdUsuario());
                 Plan nuevoPlan = buscarPlan(cn, plan.getIdplan());
                 if (nuevoPlan == null || nuevoPlan.getIdplan() == actual.getPlan().getIdplan()) return flag;
+                double importeMigracion = actual.calcularImporteMigracion(nuevoPlan);
                 actual.setPlan(nuevoPlan);
                 if (actual.getDiasAsistencia().isEmpty()) return flag;
                 if (!entrenadorCompatible(cn, actual)) return flag;
@@ -295,7 +300,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                     st.setInt(3, actual.getIdmembresia());
                     st.executeUpdate();
                 }
-                generarComprobante(cn, actual, "MIGRACION");
+                generarComprobante(cn, actual, "MIGRACION", importeMigracion);
                 cn.commit();
                 flag = true;
             } finally {
@@ -350,6 +355,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                     membresia.setFechaVencimiento(LocalDate.parse(rs.getString("fechaVencimiento")));
                     membresia.setActiva(rs.getBoolean("activa"));
                     membresia.setRenovaciones(rs.getInt("renovaciones"));
+                    membresia.setMeses(rs.getInt("meses"));
                     membresia.setIdUsuario(rs.getInt("idusuario"));
                 }
             }
@@ -402,6 +408,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                     membresia.setFechaVencimiento(LocalDate.parse(rs.getString("fechaVencimiento")));
                     membresia.setActiva(rs.getBoolean("activa"));
                     membresia.setRenovaciones(rs.getInt("renovaciones"));
+                    membresia.setMeses(rs.getInt("meses"));
                     membresia.setIdUsuario(rs.getInt("idusuario"));
                 }
             }
@@ -453,6 +460,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                 membresia.setFechaVencimiento(LocalDate.parse(rs.getString("fechaVencimiento")));
                 membresia.setActiva(rs.getBoolean("activa"));
                 membresia.setRenovaciones(rs.getInt("renovaciones"));
+                membresia.setMeses(rs.getInt("meses"));
                 membresia.setIdUsuario(rs.getInt("idusuario"));
                 lista.add(membresia);
             }
@@ -504,6 +512,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
                     membresia.setFechaVencimiento(LocalDate.parse(rs.getString("fechaVencimiento")));
                     membresia.setActiva(rs.getBoolean("activa"));
                     membresia.setRenovaciones(rs.getInt("renovaciones"));
+                    membresia.setMeses(rs.getInt("meses"));
                     membresia.setIdUsuario(rs.getInt("idusuario"));
                 }
             }
@@ -541,6 +550,8 @@ public class MembresiaDaoImpl implements IMembresiaDao {
         actual.setHorario(solicitud.getHorario());
         actual.setTipoDias(solicitud.getTipoDias());
         actual.setRenovaciones(0);
+        actual.setMeses(solicitud.getMeses());
+        if (actual.getMeses() < 1 || actual.getMeses() > 12) return null;
         iniciarPeriodo(actual);
         return actual;
     }
@@ -566,7 +577,7 @@ public class MembresiaDaoImpl implements IMembresiaDao {
     private void iniciarPeriodo(Membresia e) {
         LocalDate hoy = LocalDate.now();
         e.setFechaInicio(hoy);
-        e.setFechaVencimiento(hoy.plusDays(e.getPlan().getDuracionDias()));
+        e.setFechaVencimiento(hoy.plusDays((long) e.getPlan().getDuracionDias() * e.getMeses()));
         e.setActiva(true);
     }
 
@@ -609,12 +620,11 @@ public class MembresiaDaoImpl implements IMembresiaDao {
         }
     }
 
-    private void generarComprobante(Connection cn, Membresia e, String tipo) throws SQLException {
+    private void generarComprobante(Connection cn, Membresia e, String tipo, double subtotal) throws SQLException {
         long siguiente;
         try (Statement st = cn.createStatement(); ResultSet rs = st.executeQuery("SELECT MAX(COALESCE((SELECT seq FROM sqlite_sequence WHERE name='comprobantes'),0),COALESCE(MAX(idcomprobante),0))+1 FROM comprobantes")) {
             siguiente = rs.next() ? rs.getLong(1) : 1;
         }
-        double subtotal = e.getPlan().getPrecio();
         double descuento = e.getCliente().calcularDescuento(subtotal);
         String query = "INSERT INTO comprobantes(codigo,idcliente,tipo,estado,subtotal,descuento,total,fecha,idusuario) VALUES(?,?,?,'Enviado',?,?,?,?,?)";
         try (PreparedStatement st = cn.prepareStatement(query)) {
