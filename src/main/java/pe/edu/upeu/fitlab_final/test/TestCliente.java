@@ -93,6 +93,7 @@ public class TestCliente {
     }
 
     public static void main(String[] args) {
+        //Metodos ya configurados, para los test por dev mae
         listar();
         searchById();
         searchByDni();
