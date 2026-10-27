@@ -1,0 +1,76 @@
+PRAGMA foreign_keys = ON;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE usuarios (
+    idusuario INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario TEXT NOT NULL UNIQUE CHECK (length(trim(usuario)) > 0),
+    contrasena TEXT NOT NULL,
+    activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0, 1))
+);
+
+CREATE TABLE clientes (
+    idcliente INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT NOT NULL CHECK (length(trim(nombre)) > 0),
+    apellidos TEXT NOT NULL CHECK (length(trim(apellidos)) > 0),
+    dni TEXT NOT NULL UNIQUE CHECK (length(dni) = 8 AND dni NOT GLOB '*[^0-9]*'),
+    edad INTEGER NOT NULL CHECK (edad BETWEEN 1 AND 120),
+    genero TEXT NOT NULL CHECK (genero IN ('M', 'F')),
+    estudiante INTEGER NOT NULL DEFAULT 0 CHECK (estudiante IN (0, 1)),
+    alergias TEXT NOT NULL DEFAULT 'Ninguna'
+);
+
+CREATE TABLE entrenadores (
+    identrenador INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT NOT NULL CHECK (length(trim(nombre)) > 0),
+    apellidos TEXT NOT NULL CHECK (length(trim(apellidos)) > 0),
+    dni TEXT NOT NULL UNIQUE CHECK (length(dni) = 8 AND dni NOT GLOB '*[^0-9]*'),
+    especialidad TEXT NOT NULL CHECK (length(trim(especialidad)) > 0),
+    turno TEXT NOT NULL CHECK (turno IN ('MANANA', 'TARDE', 'NOCHE'))
+);
+
+CREATE TABLE planes (
+    idplan INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT NOT NULL UNIQUE CHECK (length(trim(nombre)) > 0),
+    precio REAL NOT NULL CHECK (precio > 0),
+    duracionDias INTEGER NOT NULL DEFAULT 30 CHECK (duracionDias > 0)
+);
+
+CREATE TABLE membresias (
+    idmembresia INTEGER PRIMARY KEY AUTOINCREMENT,
+    idcliente INTEGER NOT NULL UNIQUE,
+    idplan INTEGER NOT NULL,
+    identrenador INTEGER,
+    horario TEXT NOT NULL CHECK (horario IN ('MANANA', 'TARDE', 'NOCHE')),
+    tipoDias TEXT NOT NULL CHECK (tipoDias IN ('TODOS', 'LUNES-MIERCOLES-VIERNES', 'MARTES-JUEVES-SABADO')),
+    fechaInicio TEXT NOT NULL CHECK (length(fechaInicio) = 10),
+    fechaVencimiento TEXT NOT NULL CHECK (length(fechaVencimiento) = 10 AND fechaVencimiento >= fechaInicio),
+    activa INTEGER NOT NULL DEFAULT 1 CHECK (activa IN (0, 1)),
+    renovaciones INTEGER NOT NULL DEFAULT 0 CHECK (renovaciones >= 0),
+    meses INTEGER NOT NULL DEFAULT 1 CHECK (meses BETWEEN 1 AND 12),
+    idusuario INTEGER NOT NULL,
+    FOREIGN KEY (idcliente) REFERENCES clientes(idcliente) ON DELETE RESTRICT,
+    FOREIGN KEY (idplan) REFERENCES planes(idplan) ON DELETE RESTRICT,
+    FOREIGN KEY (identrenador) REFERENCES entrenadores(identrenador) ON DELETE RESTRICT,
+    FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE RESTRICT
+);
+
+CREATE TABLE comprobantes (
+    idcomprobante INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo TEXT NOT NULL UNIQUE,
+    idcliente INTEGER NOT NULL,
+    tipo TEXT NOT NULL CHECK (tipo IN ('REGISTRO', 'REACTIVACION', 'RENOVACION', 'MIGRACION')),
+    estado TEXT NOT NULL DEFAULT 'Enviado' CHECK (estado IN ('Enviado', 'Anulado')),
+    subtotal REAL NOT NULL CHECK (subtotal >= 0),
+    descuento REAL NOT NULL CHECK (descuento >= 0 AND descuento <= subtotal),
+    total REAL NOT NULL CHECK (total >= 0),
+    fecha TEXT NOT NULL,
+    idusuario INTEGER NOT NULL,
+    FOREIGN KEY (idcliente) REFERENCES clientes(idcliente) ON DELETE RESTRICT,
+    FOREIGN KEY (idusuario) REFERENCES usuarios(idusuario) ON DELETE RESTRICT
+);
+
+CREATE INDEX idx_membresias_aforo ON membresias(activa, horario, fechaVencimiento);
+CREATE INDEX idx_comprobantes_cliente ON comprobantes(idcliente);
+
+COMMIT;
