@@ -121,11 +121,3 @@ fitlab_final/
 ├── iniciar.bat
 └── pom.xml
 ```
-
-## Documentación
-
-La explicación del funcionamiento y de las partes principales del código se encuentra en `Manual_FitLab.pdf`.
-
-## Autoría
-
-Proyecto grupal desarrollado para la Unidad 2 del curso de Programación Orientada a Objetos.
