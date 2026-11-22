@@ -72,3 +72,22 @@
 .informes .aforo-dot-medio { -fx-background-color: #95ad4c; }
 .informes .aforo-dot-alto { -fx-background-color: #d6a142; }
 .informes .aforo-dot-lleno { -fx-background-color: #c55d5a; }
+
+.detalle { -fx-background-color: #f4f7f8; }
+.detalle .detalle-header { -fx-background-color: #153c42; -fx-padding: 24; }
+.detalle .detalle-titulo { -fx-font-family: "Corbel"; -fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white; }
+.detalle .detalle-subtitulo { -fx-font-size: 14px; -fx-text-fill: #b9d8d6; }
+.detalle .detalle-content { -fx-padding: 24; }
+.detalle .detalle-scroll { -fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0; }
+.detalle .detalle-scroll > .viewport { -fx-background-color: #f4f7f8; }
+.detalle .detalle-card { -fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e3ebed; -fx-border-radius: 10; -fx-padding: 20; }
+.detalle .detalle-caption { -fx-font-size: 12px; -fx-text-fill: #687d86; }
+.detalle .detalle-valor { -fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #183e45; }
+.detalle .detalle-nota { -fx-font-size: 12px; -fx-text-fill: #687d86; }
+.detalle .detalle-footer { -fx-background-color: white; -fx-border-color: #dce4e7 transparent transparent transparent; -fx-padding: 16 24; }
+.detalle .detalle-badge { -fx-background-color: #e0f1e9; -fx-text-fill: #21735d; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 12; -fx-padding: 6 12; }
+.detalle .detalle-activa { -fx-background-color: #e0f1e9; -fx-text-fill: #21735d; }
+.detalle .detalle-inactiva { -fx-background-color: #e6eef0; -fx-text-fill: #5d757e; }
+.detalle .detalle-vencida { -fx-background-color: #fff0db; -fx-text-fill: #966c2e; }
+.detalle .detalle-total { -fx-background-color: #eef7f3; -fx-background-radius: 8; -fx-padding: 16; }
+.detalle .detalle-importe { -fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #08796b; }
