@@ -91,3 +91,4 @@
 .detalle .detalle-vencida { -fx-background-color: #fff0db; -fx-text-fill: #966c2e; }
 .detalle .detalle-total { -fx-background-color: #eef7f3; -fx-background-radius: 8; -fx-padding: 16; }
 .detalle .detalle-importe { -fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #08796b; }
+.detalle .horario-socios .table-row-cell { -fx-cell-size: -1; -fx-min-height: 39; }
