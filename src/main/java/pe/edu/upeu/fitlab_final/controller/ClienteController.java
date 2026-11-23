@@ -17,14 +17,8 @@ import pe.edu.upeu.fitlab_final.interfaces.IClienteDao;
 import pe.edu.upeu.fitlab_final.interfaces.IComprobanteDao;
 import pe.edu.upeu.fitlab_final.interfaces.IMembresiaDao;
 import pe.edu.upeu.fitlab_final.modelo.Cliente;
-import pe.edu.upeu.fitlab_final.modelo.Comprobante;
-import pe.edu.upeu.fitlab_final.modelo.Entrenador;
-import pe.edu.upeu.fitlab_final.modelo.Membresia;
 import pe.edu.upeu.fitlab_final.utils.UtilAlerts;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class ClienteController {
     @FXML private TableView<Cliente> tableCliente;
@@ -96,58 +90,22 @@ public class ClienteController {
             cargarDatos();
             return;
         }
-        String detalle = "DATOS DEL SOCIO\n\n";
-        detalle += "Nombres: " + cliente.getNombre() + "\n";
-        detalle += "Apellidos: " + cliente.getApellidos() + "\n";
-        detalle += "DNI: " + cliente.getDni() + "\n";
-        detalle += "Edad: " + cliente.getEdad() + " años\n";
-        detalle += "Género: " + cliente.getGenero() + "\n";
-        detalle += "Estudiante: " + (cliente.isEstudiante() ? "Sí" : "No") + "\n";
-        detalle += "Alergias: " + cliente.getAlergias() + "\n\n";
-
-        Membresia membresia = membresiaDao.searchByCliente(cliente.getIdcliente());
-        detalle += "MEMBRESÍA\n\n";
-        if (membresia == null) {
-            detalle += "El socio todavía no tiene una membresía.\n";
-        } else {
-            String estado = "ACTIVA";
-            if (!membresia.isActiva()) estado = "INACTIVA";
-            else if (membresia.getFechaVencimiento().isBefore(LocalDate.now())) estado = "VENCIDA";
-            DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            double subtotal = membresia.getPlan().getPrecio() * membresia.getMeses();
-            double descuento = cliente.calcularDescuento(subtotal);
-            detalle += "Estado: " + estado + "\n";
-            detalle += "Plan: " + membresia.getPlan().getNombre() + "\n";
-            detalle += String.format("Precio mensual: S/ %.2f%n", membresia.getPlan().getPrecio());
-            detalle += "Tiempo contratado: " + (membresia.getMeses() == 1 ? "1 mes" : membresia.getMeses() + " meses") + "\n";
-            detalle += String.format("Subtotal: S/ %.2f%n", subtotal);
-            detalle += String.format("Descuento: S/ %.2f%n", descuento);
-            detalle += String.format("Total: S/ %.2f%n", subtotal - descuento);
-            detalle += "Horario: " + Entrenador.describirTurno(membresia.getHorario()) + "\n";
-            detalle += "Días: " + Membresia.describirDias(membresia.getTipoDias()) + "\n";
-            if (membresia.getEntrenador() == null) {
-                detalle += "Entrenador: Sin entrenador\n";
-            } else {
-                detalle += "Entrenador: " + membresia.getEntrenador().getNombre() + " " + membresia.getEntrenador().getApellidos() + " - " + membresia.getEntrenador().getDni() + "\n";
-            }
-            detalle += "Inicio: " + membresia.getFechaInicio().format(formato) + "\n";
-            detalle += "Vencimiento: " + membresia.getFechaVencimiento().format(formato) + "\n";
-            detalle += "Renovaciones: " + membresia.getRenovaciones() + "\n";
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/pe/edu/upeu/fitlab_final/views/cliente-datos.fxml"));
+            Parent root = loader.load();
+            ClienteDatosController controller = loader.getController();
+            controller.setDatos(cliente, membresiaDao.searchByCliente(cliente.getIdcliente()), comprobanteDao.searchByDni(cliente.getDni()));
+            Stage ventana = new Stage();
+            ventana.setTitle("Datos de " + cliente.getNombre() + " " + cliente.getApellidos());
+            ventana.initOwner(tableCliente.getScene().getWindow());
+            ventana.initModality(Modality.WINDOW_MODAL);
+            ventana.setScene(new Scene(root));
+            ventana.setMinWidth(700);
+            ventana.setMinHeight(500);
+            ventana.showAndWait();
+        } catch (IOException e) {
+            UtilAlerts.mostrarAlerts("Error", "No se pudieron abrir los datos del socio: " + e.getMessage(), "ERROR").showAndWait();
         }
-
-        List<Comprobante> comprobantes = comprobanteDao.searchByDni(cliente.getDni());
-        detalle += "\nCOMPROBANTES: " + comprobantes.size() + "\n\n";
-        if (comprobantes.isEmpty()) {
-            detalle += "No tiene comprobantes registrados.";
-        } else {
-            for (Comprobante comprobante : comprobantes) {
-                detalle += comprobante.getCodigo() + " - " + comprobante.getTipo() + " - " + comprobante.getEstado() + " - " + comprobante.getFecha() + String.format(" - S/ %.2f%n", comprobante.getTotal());
-            }
-        }
-        Alert alerta = UtilAlerts.mostrarAlerts("Datos de " + cliente.getNombre() + " " + cliente.getApellidos(), detalle, "INFORMATION");
-        alerta.getDialogPane().setPrefWidth(650);
-        alerta.setResizable(true);
-        alerta.showAndWait();
     }
 
     @FXML

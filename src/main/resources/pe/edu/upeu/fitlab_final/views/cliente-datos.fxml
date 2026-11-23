@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="pe.edu.upeu.fitlab_final.controller.ClienteDatosController" stylesheets="@style.css" styleClass="detalle" prefWidth="820" prefHeight="720" minWidth="700" minHeight="500">
+    <top>
+        <VBox spacing="6" styleClass="detalle-header">
+            <Label text="Datos del socio" styleClass="detalle-subtitulo"/>
+            <Label fx:id="lblNombre" text="Nombre del socio" styleClass="detalle-titulo" wrapText="true"/>
+            <Label text="Información personal, membresía y comprobantes" styleClass="detalle-subtitulo" wrapText="true"/>
+        </VBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="detalle-scroll">
+            <content>
+                <VBox spacing="18" styleClass="detalle-content">
+                    <VBox spacing="16" styleClass="detalle-card">
+                        <Label text="Información personal" styleClass="section-title"/>
+                        <GridPane hgap="22" vgap="16">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS" minWidth="0"/>
+                                <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS" minWidth="0"/>
+                                <ColumnConstraints percentWidth="33.34" hgrow="ALWAYS" minWidth="0"/>
+                            </columnConstraints>
+                            <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                                <Label text="Nombres" styleClass="detalle-caption"/>
+                                <Label fx:id="lblNombres" styleClass="detalle-valor" wrapText="true"/>
+                            </VBox>
+                            <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                                <Label text="Apellidos" styleClass="detalle-caption"/>
+                                <Label fx:id="lblApellidos" styleClass="detalle-valor" wrapText="true"/>
+                            </VBox>
+                            <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="2">
+                                <Label text="DNI" styleClass="detalle-caption"/>
+                                <Label fx:id="lblDni" styleClass="detalle-valor" wrapText="true"/>
+                            </VBox>
+                            <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                                <Label text="Edad" styleClass="detalle-caption"/>
+                                <Label fx:id="lblEdad" styleClass="detalle-valor" wrapText="true"/>
+                            </VBox>
+                            <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                                <Label text="Género" styleClass="detalle-caption"/>
+                                <Label fx:id="lblGenero" styleClass="detalle-valor" wrapText="true"/>
+                            </VBox>
+                            <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="2">
+                                <Label text="Estudiante" styleClass="detalle-caption"/>
+                                <Label fx:id="lblEstudiante" styleClass="detalle-valor" wrapText="true"/>
+                            </VBox>
+                            <VBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="3">
+                                <Label text="Alergias" styleClass="detalle-caption"/>
+                                <Label fx:id="lblAlergias" styleClass="detalle-valor" wrapText="true"/>
+                            </VBox>
+                        </GridPane>
+                    </VBox>
+                    <VBox spacing="16" styleClass="detalle-card">
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Membresía" styleClass="section-title" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                            <Label fx:id="lblEstado" text="Sin membresía" styleClass="detalle-badge"/>
+                        </HBox>
+                        <Label fx:id="lblSinMembresia" text="El socio todavía no tiene una membresía." styleClass="detalle-nota" wrapText="true"/>
+                        <VBox fx:id="boxMembresia" spacing="18">
+                            <GridPane hgap="24" vgap="16">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
+                                    <ColumnConstraints percentWidth="50" hgrow="ALWAYS" minWidth="0"/>
+                                </columnConstraints>
+                                <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                                    <Label text="Plan" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblPlan" styleClass="detalle-valor" wrapText="true"/>
+                                </VBox>
+                                <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                                    <Label text="Precio mensual" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblPrecio" styleClass="detalle-valor" wrapText="true"/>
+                                </VBox>
+                                <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                                    <Label text="Tiempo contratado" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblMeses" styleClass="detalle-valor" wrapText="true"/>
+                                </VBox>
+                                <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                                    <Label text="Horario" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblHorario" styleClass="detalle-valor" wrapText="true"/>
+                                </VBox>
+                                <VBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                                    <Label text="Días de asistencia" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblDias" styleClass="detalle-valor" wrapText="true"/>
+                                </VBox>
+                                <VBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                                    <Label text="Entrenador" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblEntrenador" styleClass="detalle-valor" wrapText="true"/>
+                                </VBox>
+                                <VBox spacing="5" GridPane.rowIndex="3" GridPane.columnIndex="0">
+                                    <Label text="Inicio" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblInicio" styleClass="detalle-valor" wrapText="true"/>
+                                </VBox>
+                                <VBox spacing="5" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                                    <Label text="Vencimiento" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblVencimiento" styleClass="detalle-valor" wrapText="true"/>
+                                </VBox>
+                                <VBox spacing="5" GridPane.rowIndex="4" GridPane.columnIndex="0">
+                                    <Label text="Renovaciones" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblRenovaciones" styleClass="detalle-valor"/>
+                                </VBox>
+                            </GridPane>
+                            <Separator/>
+                            <GridPane hgap="16" vgap="10" styleClass="detalle-total">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="30" hgrow="ALWAYS" minWidth="0"/>
+                                    <ColumnConstraints percentWidth="30" hgrow="ALWAYS" minWidth="0"/>
+                                    <ColumnConstraints percentWidth="40" hgrow="ALWAYS" minWidth="0"/>
+                                </columnConstraints>
+                                <VBox spacing="6" GridPane.columnIndex="0">
+                                    <Label text="Subtotal" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblSubtotal" styleClass="detalle-valor" wrapText="true"/>
+                                </VBox>
+                                <VBox spacing="6" GridPane.columnIndex="1">
+                                    <Label text="Descuento" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblDescuento" styleClass="detalle-valor" wrapText="true"/>
+                                </VBox>
+                                <VBox spacing="6" GridPane.columnIndex="2">
+                                    <Label text="Total contratado" styleClass="detalle-caption"/>
+                                    <Label fx:id="lblTotal" styleClass="detalle-importe" wrapText="true"/>
+                                </VBox>
+                            </GridPane>
+                        </VBox>
+                    </VBox>
+                    <VBox spacing="12" styleClass="detalle-card">
+                        <Label text="Comprobantes" styleClass="section-title"/>
+                        <Label fx:id="lblComprobantes" text="0 comprobantes registrados" styleClass="detalle-nota"/>
+                        <TableView fx:id="tableComprobantes" prefHeight="240" minHeight="180">
+                            <placeholder>
+                                <Label text="No tiene comprobantes registrados." styleClass="detalle-nota" wrapText="true"/>
+                            </placeholder>
+                            <columns>
+                                <TableColumn fx:id="colCodigo" text="Código" prefWidth="110" minWidth="85"/>
+                                <TableColumn fx:id="colTipo" text="Operación" prefWidth="125" minWidth="100"/>
+                                <TableColumn fx:id="colEstado" text="Estado" prefWidth="95" minWidth="80"/>
+                                <TableColumn fx:id="colFecha" text="Fecha" prefWidth="190" minWidth="160"/>
+                                <TableColumn fx:id="colTotal" text="Total" prefWidth="110" minWidth="100"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" styleClass="detalle-footer">
+            <Button fx:id="btnCerrar" text="Cerrar" onAction="#handleCerrar" cancelButton="true" styleClass="primary"/>
+        </HBox>
+    </bottom>
+</BorderPane>

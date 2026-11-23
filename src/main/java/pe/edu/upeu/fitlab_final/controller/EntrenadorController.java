@@ -19,7 +19,8 @@ import pe.edu.upeu.fitlab_final.modelo.Entrenador;
 import pe.edu.upeu.fitlab_final.modelo.Membresia;
 import pe.edu.upeu.fitlab_final.utils.UtilAlerts;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntrenadorController {
     @FXML private TableView<Entrenador> tableEntrenador;
@@ -82,31 +83,28 @@ public class EntrenadorController {
             cargarDatos();
             return;
         }
-        String detalle = "DATOS DEL ENTRENADOR\n\n";
-        detalle += "Entrenador: " + entrenador.getNombre() + " " + entrenador.getApellidos() + "\n";
-        detalle += "DNI: " + entrenador.getDni() + "\n";
-        detalle += "Especialidad: " + entrenador.getEspecialidad() + "\n";
-        detalle += "Turno: " + Entrenador.describirTurno(entrenador.getTurno()) + "\n\n";
-        detalle += "SOCIOS ASIGNADOS\n\n";
-        int cantidad = 0;
+        List<Membresia> asignados = new ArrayList<>();
         for (Membresia membresia : membresiaDao.listAll()) {
             if (membresia.getEntrenador() != null && membresia.getEntrenador().getIdentrenador() == entrenador.getIdentrenador()) {
-                String estado = "ACTIVA";
-                if (!membresia.isActiva()) estado = "INACTIVA";
-                else if (membresia.getFechaVencimiento().isBefore(LocalDate.now())) estado = "VENCIDA";
-                detalle += membresia.getCliente().getNombre() + " " + membresia.getCliente().getApellidos() + " - " + membresia.getCliente().getDni() + "\n";
-                detalle += "Plan: " + membresia.getPlan().getNombre() + "\n";
-                detalle += "Días: " + Membresia.describirDias(membresia.getTipoDias()) + "\n";
-                detalle += "Turno: " + Entrenador.describirTurno(membresia.getHorario()) + "\n";
-                detalle += "Estado: " + estado + "\n\n";
-                cantidad++;
+                asignados.add(membresia);
             }
         }
-        if (cantidad == 0) detalle += "El entrenador no tiene socios asignados.";
-        Alert alerta = UtilAlerts.mostrarAlerts("Horario de " + entrenador.getNombre() + " " + entrenador.getApellidos(), detalle, "INFORMATION");
-        alerta.getDialogPane().setPrefWidth(620);
-        alerta.setResizable(true);
-        alerta.showAndWait();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/pe/edu/upeu/fitlab_final/views/entrenador-horario.fxml"));
+            Parent root = loader.load();
+            EntrenadorHorarioController controller = loader.getController();
+            controller.setDatos(entrenador, asignados);
+            Stage ventana = new Stage();
+            ventana.setTitle("Horario de " + entrenador.getNombre() + " " + entrenador.getApellidos());
+            ventana.initOwner(tableEntrenador.getScene().getWindow());
+            ventana.initModality(Modality.WINDOW_MODAL);
+            ventana.setScene(new Scene(root));
+            ventana.setMinWidth(820);
+            ventana.setMinHeight(500);
+            ventana.showAndWait();
+        } catch (IOException e) {
+            UtilAlerts.mostrarAlerts("Error", "No se pudo abrir el horario: " + e.getMessage(), "ERROR").showAndWait();
+        }
     }
 
     @FXML

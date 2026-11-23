@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" prefWidth="960" prefHeight="660" minWidth="820" minHeight="500" fx:controller="pe.edu.upeu.fitlab_final.controller.EntrenadorHorarioController" stylesheets="@style.css" styleClass="detalle">
+    <top>
+        <VBox spacing="6" styleClass="detalle-header">
+            <Label text="Ver horario" styleClass="detalle-titulo"/>
+            <Label fx:id="lblNombre" styleClass="detalle-subtitulo" wrapText="true"/>
+        </VBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" styleClass="detalle-scroll">
+            <content>
+                <VBox spacing="18" styleClass="detalle-content">
+                    <GridPane hgap="24" vgap="8" styleClass="detalle-card">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="25"/>
+                            <ColumnConstraints percentWidth="45"/>
+                            <ColumnConstraints percentWidth="30"/>
+                        </columnConstraints>
+                        <Label text="DNI del entrenador" styleClass="detalle-caption" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label text="Especialidad" styleClass="detalle-caption" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label text="Turno de trabajo" styleClass="detalle-caption" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                        <Label fx:id="lblDni" styleClass="detalle-valor" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <Label fx:id="lblEspecialidad" styleClass="detalle-valor" wrapText="true" minHeight="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <Label fx:id="lblTurno" styleClass="detalle-badge" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                    </GridPane>
+                    <VBox spacing="12" styleClass="detalle-card" VBox.vgrow="ALWAYS">
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Socios asignados" styleClass="section-title"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="lblCantidad" text="0 socios" styleClass="detalle-badge"/>
+                        </HBox>
+                        <Label text="Días y turnos de las membresías asignadas a este entrenador." styleClass="detalle-nota" wrapText="true"/>
+                        <TableView fx:id="tableSocios" minHeight="100" VBox.vgrow="ALWAYS" styleClass="horario-socios">
+                            <placeholder>
+                                <VBox alignment="CENTER" spacing="6">
+                                    <Label text="Sin socios asignados" styleClass="section-title"/>
+                                    <Label text="El entrenador todavía no tiene socios asignados." styleClass="detalle-nota" wrapText="true"/>
+                                </VBox>
+                            </placeholder>
+                            <columns>
+                                <TableColumn fx:id="colSocio" text="Socio" prefWidth="180" minWidth="130"/>
+                                <TableColumn fx:id="colDni" text="DNI" prefWidth="95" minWidth="85"/>
+                                <TableColumn fx:id="colPlan" text="Plan" prefWidth="105" minWidth="80"/>
+                                <TableColumn fx:id="colDias" text="Días de asistencia" prefWidth="190" minWidth="135"/>
+                                <TableColumn fx:id="colTurno" text="Turno" prefWidth="95" minWidth="85"/>
+                                <TableColumn fx:id="colEstado" text="Estado" prefWidth="115" minWidth="110"/>
+                            </columns>
+                        </TableView>
+                        <Label text="Se muestran membresías activas, inactivas y vencidas." styleClass="detalle-nota" wrapText="true"/>
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" styleClass="detalle-footer">
+            <Button text="Cerrar" onAction="#handleCerrar" cancelButton="true" styleClass="primary"/>
+        </HBox>
+    </bottom>
+</BorderPane>
