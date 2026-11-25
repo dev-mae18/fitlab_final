@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import pe.edu.upeu.fitlab_final.implementacion.UsuarioDaoImpl;
 import pe.edu.upeu.fitlab_final.interfaces.IUsuarioDao;
+import pe.edu.upeu.fitlab_final.modelo.UserSession;
 import pe.edu.upeu.fitlab_final.modelo.Usuario;
 import pe.edu.upeu.fitlab_final.utils.UtilAlerts;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class LoginController {
             lblMensaje.setText("Ingrese usuario y contraseña.");
             return;
         }
-        Usuario usuario = usuarioDao.autenticar(txtUsuario.getText().trim(), txtContrasena.getText());
+        Usuario usuario = usuarioDao.login(txtUsuario.getText().trim(), txtContrasena.getText());
         if (usuario == null) {
             intentos++;
             lblMensaje.setText(intentos >= 3 ? "Acceso bloqueado. Vuelva a abrir FitLab." : "Usuario o contraseña incorrectos. Intentos restantes: " + (3 - intentos));
@@ -42,10 +43,9 @@ public class LoginController {
             return;
         }
         try {
+            UserSession.getInstance().setUserLogin(usuario);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/pe/edu/upeu/fitlab_final/views/main-view.fxml"));
             Parent view = loader.load();
-            MainController controller = loader.getController();
-            controller.setUsuario(usuario);
             Stage stage = (Stage) txtUsuario.getScene().getWindow();
             stage.getScene().setRoot(view);
             stage.setTitle("FitLab · Gestión de gimnasio");
@@ -53,6 +53,7 @@ public class LoginController {
             stage.setMinHeight(720);
             stage.setMaximized(true);
         } catch (IOException e) {
+            UserSession.getInstance().cleanSession();
             UtilAlerts.mostrarAlerts("Error", "No se pudo abrir FitLab: " + e.getMessage(), "ERROR").showAndWait();
         }
     }

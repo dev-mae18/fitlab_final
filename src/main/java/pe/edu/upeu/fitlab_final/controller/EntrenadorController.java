@@ -97,7 +97,7 @@ public class EntrenadorController {
             Stage ventana = new Stage();
             ventana.setTitle("Horario de " + entrenador.getNombre() + " " + entrenador.getApellidos());
             ventana.initOwner(tableEntrenador.getScene().getWindow());
-            ventana.initModality(Modality.WINDOW_MODAL);
+            ventana.initModality(Modality.APPLICATION_MODAL);
             ventana.setScene(new Scene(root));
             ventana.setMinWidth(820);
             ventana.setMinHeight(500);
@@ -146,7 +146,7 @@ public class EntrenadorController {
             Stage ventana = new Stage();
             ventana.setTitle(entidad == null ? "Nuevo entrenador" : "Editar entrenador");
             ventana.initOwner(tableEntrenador.getScene().getWindow());
-            ventana.initModality(Modality.WINDOW_MODAL);
+            ventana.initModality(Modality.APPLICATION_MODAL);
             ventana.setScene(new Scene(root));
             ventana.setResizable(false);
             ventana.showAndWait();

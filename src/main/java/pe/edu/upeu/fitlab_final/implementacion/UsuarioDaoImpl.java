@@ -7,7 +7,7 @@ import java.sql.*;
 
 public class UsuarioDaoImpl implements IUsuarioDao {
     @Override
-    public Usuario autenticar(String usuario, String contrasena) {
+    public Usuario login(String usuario, String contrasena) {
         Usuario e = null;
         String query = "SELECT idusuario,usuario FROM usuarios WHERE usuario=? AND contrasena=? AND activo=1";
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement st = cn.prepareStatement(query)) {

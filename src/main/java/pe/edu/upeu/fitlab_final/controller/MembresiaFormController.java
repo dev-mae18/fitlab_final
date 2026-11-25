@@ -35,6 +35,9 @@ public class MembresiaFormController {
     private final IMembresiaDao membresiaDao = new MembresiaDaoImpl();
     private Membresia membresia;
     private boolean saved = false;
+    private boolean nuevoRegistro = true;
+    private boolean nuevaAdquisicion;
+    private boolean readquisicionGuardada;
 
     @FXML
     public void initialize() {
@@ -51,11 +54,26 @@ public class MembresiaFormController {
 
     public boolean isSaved() { return saved; }
     public Membresia getMembresia() { return membresia; }
+    public boolean isNuevaAdquisicion() { return nuevaAdquisicion || readquisicionGuardada; }
 
     public void setMembresia(Membresia m) {
         saved = false;
+        nuevoRegistro = m == null;
+        nuevaAdquisicion = false;
+        readquisicionGuardada = false;
         this.membresia = m;
+        cbxCliente.setDisable(false);
+        cbxPlan.setDisable(false);
+        cbxMeses.setDisable(false);
         if (m == null) {
+            cbxCliente.setValue(null);
+            cbxPlan.setValue(null);
+            cbxMeses.setValue("1 mes");
+            cbxHorario.setValue(null);
+            cbxTipoDias.setValue(null);
+            chkEntrenador.setSelected(false);
+            cbxEntrenador.setValue(null);
+            handleEntrenador();
             lblNota.setText("La nueva membresía inicia hoy. Los socios vencidos o inactivos aparecen identificados en la lista.");
             List<Membresia> registradas = membresiaDao.listAll();
             ObservableList<Cliente> disponibles = FXCollections.observableArrayList();
@@ -115,6 +133,7 @@ public class MembresiaFormController {
 
     public void setNuevaMembresia(Membresia anterior) {
         setMembresia(anterior);
+        nuevaAdquisicion = true;
         cbxPlan.setDisable(false);
         cbxMeses.setDisable(false);
         lblNota.setText("La nueva membresía comienza hoy. Puede elegir el plan, horario y días de asistencia; se generará un nuevo comprobante de pago.");
@@ -153,26 +172,46 @@ public class MembresiaFormController {
 
     @FXML
     private void handleSave() {
-        if (validate()) {
-            if (membresia == null) {
-                Membresia registrada = membresiaDao.searchByCliente(cbxCliente.getValue().getIdcliente());
-                if (registrada == null) membresia = new Membresia();
-                else membresia = registrada;
-            }
-            membresia.setCliente(cbxCliente.getValue());
-            membresia.setPlan(cbxPlan.getValue());
-            membresia.setMeses(Integer.parseInt(cbxMeses.getValue().split(" ")[0]));
-            membresia.setEntrenador(chkEntrenador.isSelected() ? cbxEntrenador.getValue() : null);
-            String horario = cbxHorario.getValue();
-            if ("MAÑANA".equals(horario)) horario = "MANANA";
-            membresia.setHorario(horario);
-            String dias = cbxTipoDias.getValue();
-            if ("Lunes, miércoles y viernes".equals(dias)) membresia.setTipoDias("LUNES-MIERCOLES-VIERNES");
-            if ("Martes, jueves y sábado".equals(dias)) membresia.setTipoDias("MARTES-JUEVES-SABADO");
-            if ("Todos los días".equals(dias)) membresia.setTipoDias("TODOS");
-            saved = true;
-            cerrar();
+        if (!validate()) return;
+        Usuario usuario = UserSession.getInstance().getUserLogin();
+        if (usuario == null) {
+            UtilAlerts.mostrarAlerts("Sesión requerida", "Inicie sesión antes de guardar la membresía.", "WARNING").showAndWait();
+            return;
         }
+        Membresia procesada = membresia;
+        if (nuevoRegistro) {
+            procesada = membresiaDao.searchByCliente(cbxCliente.getValue().getIdcliente());
+            if (procesada == null) procesada = new Membresia();
+        }
+        boolean readquisicion = nuevaAdquisicion || (nuevoRegistro && procesada.getIdmembresia() > 0);
+        procesada.setCliente(cbxCliente.getValue());
+        procesada.setPlan(cbxPlan.getValue());
+        procesada.setMeses(Integer.parseInt(cbxMeses.getValue().split(" ")[0]));
+        procesada.setEntrenador(chkEntrenador.isSelected() ? cbxEntrenador.getValue() : null);
+        String horario = cbxHorario.getValue();
+        if ("MAÑANA".equals(horario)) horario = "MANANA";
+        procesada.setHorario(horario);
+        String dias = cbxTipoDias.getValue();
+        if ("Lunes, miércoles y viernes".equals(dias)) procesada.setTipoDias("LUNES-MIERCOLES-VIERNES");
+        if ("Martes, jueves y sábado".equals(dias)) procesada.setTipoDias("MARTES-JUEVES-SABADO");
+        if ("Todos los días".equals(dias)) procesada.setTipoDias("TODOS");
+        procesada.setIdUsuario(usuario.getIdusuario());
+        boolean guardado;
+        if (readquisicion) {
+            guardado = membresiaDao.nuevaMembresia(procesada);
+        } else if (nuevoRegistro) {
+            guardado = membresiaDao.insert(procesada);
+        } else {
+            guardado = membresiaDao.update(procesada);
+        }
+        if (!guardado) {
+            UtilAlerts.mostrarAlerts("No se pudo guardar", "Compruebe los datos, los cupos del horario y el estado actual del socio. Puede corregirlos y volver a intentarlo.", "WARNING").showAndWait();
+            return;
+        }
+        membresia = procesada;
+        readquisicionGuardada = readquisicion;
+        saved = true;
+        cerrar();
     }
 
     @FXML private void handleCancel() { cerrar(); }

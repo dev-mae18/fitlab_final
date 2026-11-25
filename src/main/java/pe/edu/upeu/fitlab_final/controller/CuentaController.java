@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import pe.edu.upeu.fitlab_final.implementacion.UsuarioDaoImpl;
 import pe.edu.upeu.fitlab_final.interfaces.IUsuarioDao;
+import pe.edu.upeu.fitlab_final.modelo.UserSession;
 import pe.edu.upeu.fitlab_final.modelo.Usuario;
 import pe.edu.upeu.fitlab_final.utils.UtilAlerts;
 
@@ -14,15 +15,15 @@ public class CuentaController {
     @FXML private PasswordField txtNueva;
     @FXML private PasswordField txtConfirmacion;
     private final IUsuarioDao usuarioDao = new UsuarioDaoImpl();
-    private Usuario usuario;
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-        if (usuario != null) lblUsuario.setText("Usuario: " + usuario.getUsuario());
+    @FXML
+    public void initialize() {
+        Usuario usuario = UserSession.getInstance().getUserLogin();
+        lblUsuario.setText(usuario == null ? "Sesión no iniciada" : "Usuario: " + usuario.getUsuario());
     }
 
     @FXML
     private void handleGuardar() {
+        Usuario usuario = UserSession.getInstance().getUserLogin();
         if (usuario == null) return;
         if (txtActual.getText().isBlank() || txtNueva.getText().isBlank() || !txtNueva.getText().equals(txtConfirmacion.getText())) {
             UtilAlerts.mostrarAlerts("Validación", "Ingrese la contraseña actual y confirme la nueva contraseña.", "WARNING").showAndWait();

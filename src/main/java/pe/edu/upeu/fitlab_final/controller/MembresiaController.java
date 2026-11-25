@@ -21,6 +21,7 @@ import pe.edu.upeu.fitlab_final.modelo.Comprobante;
 import pe.edu.upeu.fitlab_final.modelo.Entrenador;
 import pe.edu.upeu.fitlab_final.modelo.Membresia;
 import pe.edu.upeu.fitlab_final.modelo.Plan;
+import pe.edu.upeu.fitlab_final.modelo.UserSession;
 import pe.edu.upeu.fitlab_final.modelo.Usuario;
 import pe.edu.upeu.fitlab_final.utils.UtilAlerts;
 import java.io.IOException;
@@ -48,9 +49,6 @@ public class MembresiaController {
     private final IPlanDao planDao = new PlanDaoImpl();
     private final IComprobanteDao comprobanteDao = new ComprobanteDaoImpl();
     private ObservableList<Membresia> listaMembresias;
-    private Usuario usuario;
-
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
     @FXML
     public void initialize() {
@@ -102,6 +100,11 @@ public class MembresiaController {
     }
 
     private Membresia seleccionar() {
+        Usuario usuario = UserSession.getInstance().getUserLogin();
+        if (usuario == null) {
+            UtilAlerts.mostrarAlerts("Sesión requerida", "Inicie sesión para administrar las membresías.", "WARNING").showAndWait();
+            return null;
+        }
         Membresia seleccionado = tableMembresia.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
             UtilAlerts.mostrarAlerts("Selección requerida", "Seleccione una membresía de la tabla antes de realizar esta acción.", "WARNING").showAndWait();
@@ -113,7 +116,7 @@ public class MembresiaController {
             cargarDatos();
             return null;
         }
-        if (usuario != null) actual.setIdUsuario(usuario.getIdusuario());
+        actual.setIdUsuario(usuario.getIdusuario());
         return actual;
     }
 
@@ -124,7 +127,10 @@ public class MembresiaController {
     }
 
     private void abrirFormulario(Membresia membresia, boolean nuevaAdquisicion) {
-        if (usuario == null) return;
+        if (UserSession.getInstance().getUserLogin() == null) {
+            UtilAlerts.mostrarAlerts("Sesión requerida", "Inicie sesión para administrar las membresías.", "WARNING").showAndWait();
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/pe/edu/upeu/fitlab_final/views/membresia-form.fxml"));
             Parent root = loader.load();
@@ -134,24 +140,15 @@ public class MembresiaController {
             Stage ventana = new Stage();
             ventana.setTitle(membresia == null || nuevaAdquisicion ? "Nueva membresía" : "Editar horario de membresía");
             ventana.initOwner(tableMembresia.getScene().getWindow());
-            ventana.initModality(Modality.WINDOW_MODAL);
+            ventana.initModality(Modality.APPLICATION_MODAL);
             ventana.setScene(new Scene(root));
             ventana.setResizable(false);
             ventana.showAndWait();
             if (controller.isSaved()) {
                 Membresia procesada = controller.getMembresia();
-                procesada.setIdUsuario(usuario.getIdusuario());
-                boolean guardado;
-                boolean registroExistente = membresia == null && procesada.getIdmembresia() > 0;
-                if (nuevaAdquisicion || registroExistente) {
-                    guardado = membresiaDao.nuevaMembresia(procesada);
-                } else if (membresia == null) {
-                    guardado = membresiaDao.insert(procesada);
-                } else {
-                    guardado = membresiaDao.update(procesada);
-                }
-                String mensaje = (nuevaAdquisicion || registroExistente) && guardado ? "Nueva membresía registrada." + detalleComprobante(procesada) : "Membresía guardada.";
-                resultado(guardado, mensaje, "No se pudo guardar la membresía. Compruebe los datos, los cupos del horario y el estado actual del socio.");
+                String mensaje = controller.isNuevaAdquisicion() ? "Nueva membresía registrada." + detalleComprobante(procesada) : "Membresía guardada.";
+                informar("Operación realizada", mensaje);
+                cargarDatos();
             }
         } catch (IOException e) {
             UtilAlerts.mostrarAlerts("Error", "No se pudo abrir el formulario: " + e.getMessage(), "ERROR").showAndWait();

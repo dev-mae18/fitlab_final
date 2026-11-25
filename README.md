@@ -34,7 +34,7 @@ FitLab prepara automáticamente su base de datos en la carpeta del usuario de Wi
 %USERPROFILE%\FitLab\fitlab.db
 ```
 
-La ruta se calcula a partir de `user.home`. No hace falta instalar SQLite, crear carpetas ni ejecutar SQL manualmente: la aplicación crea la carpeta y las seis tablas `usuarios`, `clientes`, `entrenadores`, `planes`, `membresias` y `comprobantes` cuando se conecta.
+La ruta se calcula a partir de `user.home`. La clase `ConexionDB` crea la carpeta y prepara las seis tablas `usuarios`, `clientes`, `entrenadores`, `planes`, `membresias` y `comprobantes` mediante su método `initDatabase()`.
 
 ### Datos iniciales
 
@@ -118,7 +118,6 @@ fitlab_final/
 │   ├── test/             Pruebas con la base de datos real
 │   └── utils/            Conexión y utilidades
 ├── src/main/resources/pe/edu/upeu/fitlab_final/
-│   ├── database/         Esquema inicial de SQLite
 │   └── views/            Archivos FXML y estilos CSS
 ├── iniciar.bat
 ├── sqlite_comando.txt    Referencia del esquema de la base de datos

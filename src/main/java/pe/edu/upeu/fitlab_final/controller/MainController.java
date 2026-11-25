@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import pe.edu.upeu.fitlab_final.modelo.UserSession;
 import pe.edu.upeu.fitlab_final.modelo.Usuario;
 import pe.edu.upeu.fitlab_final.utils.UtilAlerts;
 import java.io.IOException;
@@ -13,13 +14,11 @@ import java.io.IOException;
 public class MainController {
     @FXML private StackPane contentArea;
     @FXML private Label lblUsuario;
-    private Usuario usuario;
-
-    @FXML public void initialize() { showHome(); }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-        lblUsuario.setText("Sesión: " + usuario.getUsuario());
+    @FXML
+    public void initialize() {
+        Usuario usuario = UserSession.getInstance().getUserLogin();
+        lblUsuario.setText(usuario == null ? "Sesión no iniciada" : "Sesión: " + usuario.getUsuario());
+        showHome();
     }
 
     @FXML private void showHome() { loadView("home-view.fxml"); }
@@ -34,14 +33,6 @@ public class MainController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/pe/edu/upeu/fitlab_final/views/" + fxml));
             Parent view = loader.load();
-            if ("membresia-view.fxml".equals(fxml)) {
-                MembresiaController controller = loader.getController();
-                controller.setUsuario(usuario);
-            }
-            if ("cuenta-view.fxml".equals(fxml)) {
-                CuentaController controller = loader.getController();
-                controller.setUsuario(usuario);
-            }
             contentArea.getChildren().setAll(view);
         } catch (IOException e) {
             UtilAlerts.mostrarAlerts("Error", "No se pudo cargar la vista: " + e.getMessage(), "ERROR").showAndWait();
@@ -53,7 +44,7 @@ public class MainController {
         try {
             Parent view = FXMLLoader.load(getClass().getResource("/pe/edu/upeu/fitlab_final/views/login-view.fxml"));
             Stage stage = (Stage) contentArea.getScene().getWindow();
-            usuario = null;
+            UserSession.getInstance().cleanSession();
             stage.setMinWidth(600);
             stage.setMinHeight(520);
             stage.getScene().setRoot(view);

@@ -7,8 +7,8 @@ import pe.edu.upeu.fitlab_final.modelo.Usuario;
 public class TestUsuario {
     private static IUsuarioDao usuarioDao = new UsuarioDaoImpl();
 
-    public static void autenticar() {
-        Usuario usuario = usuarioDao.autenticar("admin", "12345");
+    public static void validarLogin() {
+        Usuario usuario = usuarioDao.login("admin", "admin123");
         if (usuario != null) {
             System.out.println("LOGIN CORRECTO");
             System.out.println("ID_USUARIO: " + usuario.getIdusuario());
@@ -19,6 +19,6 @@ public class TestUsuario {
     }
 
     public static void main(String[] args) {
-        autenticar();
+        validarLogin();
     }
 }

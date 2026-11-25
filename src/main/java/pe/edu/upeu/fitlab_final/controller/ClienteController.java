@@ -98,7 +98,7 @@ public class ClienteController {
             Stage ventana = new Stage();
             ventana.setTitle("Datos de " + cliente.getNombre() + " " + cliente.getApellidos());
             ventana.initOwner(tableCliente.getScene().getWindow());
-            ventana.initModality(Modality.WINDOW_MODAL);
+            ventana.initModality(Modality.APPLICATION_MODAL);
             ventana.setScene(new Scene(root));
             ventana.setMinWidth(700);
             ventana.setMinHeight(500);
@@ -147,7 +147,7 @@ public class ClienteController {
             Stage ventana = new Stage();
             ventana.setTitle(entidad == null ? "Nuevo cliente" : "Editar cliente");
             ventana.initOwner(tableCliente.getScene().getWindow());
-            ventana.initModality(Modality.WINDOW_MODAL);
+            ventana.initModality(Modality.APPLICATION_MODAL);
             ventana.setScene(new Scene(root));
             ventana.setResizable(false);
             ventana.showAndWait();
