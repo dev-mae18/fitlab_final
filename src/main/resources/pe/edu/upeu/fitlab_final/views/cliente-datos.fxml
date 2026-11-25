@@ -68,7 +68,7 @@
                                     <Label fx:id="lblPlan" styleClass="detalle-valor" wrapText="true"/>
                                 </VBox>
                                 <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="1">
-                                    <Label text="Precio mensual" styleClass="detalle-caption"/>
+                                    <Label text="Precio mensual contratado" styleClass="detalle-caption"/>
                                     <Label fx:id="lblPrecio" styleClass="detalle-valor" wrapText="true"/>
                                 </VBox>
                                 <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="0">

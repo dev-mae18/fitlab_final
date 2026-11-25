@@ -85,7 +85,7 @@ public class Cliente extends Persona {
     public double calcularDescuento(double importe) {
         double descuento = 0;
         if (isEstudiante()) {
-            descuento = importe * 0.10;
+            descuento = Math.round(importe * 10.0) / 100.0;
         }
         return descuento;
     }

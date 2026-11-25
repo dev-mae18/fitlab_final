@@ -27,6 +27,7 @@
             <Button text="Comprobantes" onAction="#showComprobantes" styleClass="nav-button" maxWidth="Infinity"/>
             <Button text="Informes" onAction="#showInformes" styleClass="nav-button" maxWidth="Infinity"/>
             <Region VBox.vgrow="ALWAYS"/>
+            <Button fx:id="btnConfiguracion" text="Configuración" onAction="#showConfiguracion" styleClass="nav-button" maxWidth="Infinity"/>
             <Button text="Mi cuenta" onAction="#showCuenta" styleClass="nav-button" maxWidth="Infinity"/>
             <Button text="Cerrar sesión" onAction="#handleLogout" styleClass="nav-button" maxWidth="Infinity"/>
         </VBox>

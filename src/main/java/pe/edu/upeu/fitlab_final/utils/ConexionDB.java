@@ -98,7 +98,9 @@ public class ConexionDB {
                 "idplan INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "nombre TEXT NOT NULL UNIQUE CHECK (length(trim(nombre)) > 0), " +
                 "precio REAL NOT NULL CHECK (precio > 0), " +
-                "duracionDias INTEGER NOT NULL DEFAULT 30 CHECK (duracionDias > 0));";
+                "duracionDias INTEGER NOT NULL DEFAULT 30 CHECK (duracionDias > 0), " +
+                "meses INTEGER NOT NULL DEFAULT 1 CHECK (meses BETWEEN 1 AND 12), " +
+                "promocion INTEGER NOT NULL DEFAULT 0 CHECK (promocion IN (0, 1)));";
 
         String sqlMembresia = "CREATE TABLE IF NOT EXISTS membresias (" +
                 "idmembresia INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -112,6 +114,8 @@ public class ConexionDB {
                 "activa INTEGER NOT NULL DEFAULT 1 CHECK (activa IN (0, 1)), " +
                 "renovaciones INTEGER NOT NULL DEFAULT 0 CHECK (renovaciones >= 0), " +
                 "meses INTEGER NOT NULL DEFAULT 1 CHECK (meses BETWEEN 1 AND 12), " +
+                "precioMensual REAL CHECK (precioMensual > 0), " +
+                "duracionDiasPlan INTEGER CHECK (duracionDiasPlan > 0), " +
                 "idusuario INTEGER NOT NULL, " +
                 "FOREIGN KEY (idcliente) REFERENCES clientes(idcliente) ON DELETE RESTRICT, " +
                 "FOREIGN KEY (idplan) REFERENCES planes(idplan) ON DELETE RESTRICT, " +
@@ -148,6 +152,8 @@ public class ConexionDB {
                 stmt.execute(sqlIndiceAforo);
                 stmt.execute(sqlIndiceComprobantes);
 
+                actualizarEstructura();
+
                 stmt.executeUpdate("INSERT INTO usuarios(usuario, contrasena, activo) " +
                         "SELECT 'admin', 'admin123', 1 WHERE NOT EXISTS (SELECT 1 FROM usuarios)");
                 boolean sinPlanes;
@@ -169,6 +175,38 @@ public class ConexionDB {
             }
             throw e;
         }
+    }
+
+    private static void actualizarEstructura() throws SQLException {
+        try (Statement stmt = connection.createStatement()) {
+            if (!existeColumna("planes", "meses")) {
+                stmt.execute("ALTER TABLE planes ADD COLUMN meses INTEGER NOT NULL DEFAULT 1 CHECK (meses BETWEEN 1 AND 12)");
+            }
+            if (!existeColumna("planes", "promocion")) {
+                stmt.execute("ALTER TABLE planes ADD COLUMN promocion INTEGER NOT NULL DEFAULT 0 CHECK (promocion IN (0, 1))");
+            }
+            if (!existeColumna("membresias", "precioMensual")) {
+                stmt.execute("ALTER TABLE membresias ADD COLUMN precioMensual REAL CHECK (precioMensual > 0)");
+            }
+            if (!existeColumna("membresias", "duracionDiasPlan")) {
+                stmt.execute("ALTER TABLE membresias ADD COLUMN duracionDiasPlan INTEGER CHECK (duracionDiasPlan > 0)");
+            }
+            stmt.executeUpdate("UPDATE membresias SET precioMensual=" +
+                    "(SELECT CASE WHEN p.promocion=1 THEN p.precio/p.meses ELSE p.precio END " +
+                    "FROM planes p WHERE p.idplan=membresias.idplan) WHERE precioMensual IS NULL");
+            stmt.executeUpdate("UPDATE membresias SET duracionDiasPlan=" +
+                    "(SELECT p.duracionDias FROM planes p WHERE p.idplan=membresias.idplan) WHERE duracionDiasPlan IS NULL");
+        }
+    }
+
+    private static boolean existeColumna(String tabla, String columna) throws SQLException {
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery("PRAGMA table_info(" + tabla + ")")) {
+            while (rs.next()) {
+                if (columna.equalsIgnoreCase(rs.getString("name"))) return true;
+            }
+        }
+        return false;
     }
 
     private static void migrarBaseAnterior(Path origen, Path destino) throws SQLException, IOException {

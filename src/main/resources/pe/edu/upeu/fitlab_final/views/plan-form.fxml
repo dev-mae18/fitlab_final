@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="pe.edu.upeu.fitlab_final.controller.PlanFormController" stylesheets="@style.css" styleClass="plan-form" prefWidth="620" prefHeight="650">
+    <top>
+        <VBox spacing="6" styleClass="plan-form-header">
+            <Label fx:id="lblTitulo" text="Nuevo plan" styleClass="plan-form-titulo"/>
+            <Label text="Define el precio y la duración de tu oferta." styleClass="plan-form-subtitulo" wrapText="true"/>
+        </VBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="plan-form-scroll">
+            <content>
+        <VBox spacing="16" styleClass="plan-form-body">
+            <VBox spacing="7">
+                <Label text="Nombre del plan" styleClass="plan-form-caption"/>
+                <TextField fx:id="txtNombre" promptText="Ej. Entrenamiento funcional"/>
+            </VBox>
+            <CheckBox fx:id="chkPromocion" text="Este plan es un paquete promocional" onAction="#handlePromocion"/>
+            <GridPane hgap="20" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="55" hgrow="ALWAYS" minWidth="0"/>
+                    <ColumnConstraints percentWidth="45" hgrow="ALWAYS" minWidth="0"/>
+                </columnConstraints>
+                <VBox spacing="7" GridPane.columnIndex="0">
+                    <Label fx:id="lblPrecio" text="Precio mensual (S/)" styleClass="plan-form-caption" wrapText="true"/>
+                    <TextField fx:id="txtPrecio" promptText="0.00" onAction="#actualizarResumen"/>
+                </VBox>
+                <VBox spacing="7" GridPane.columnIndex="1">
+                    <Label text="Duración" styleClass="plan-form-caption"/>
+                    <ComboBox fx:id="cbxMeses" promptText="Meses del paquete" onAction="#actualizarResumen" maxWidth="Infinity"/>
+                    <Label fx:id="lblDuracion" text="1 mes · 30 días" styleClass="plan-form-caption" wrapText="true"/>
+                </VBox>
+            </GridPane>
+            <VBox spacing="7" styleClass="plan-form-resumen">
+                <Label text="Resumen del plan" styleClass="plan-form-resumen-titulo"/>
+                <Label fx:id="lblResumen" text="Ingrese el precio mensual del plan." styleClass="plan-form-resumen-texto" wrapText="true"/>
+            </VBox>
+            <Label fx:id="lblNota" styleClass="plan-form-nota" wrapText="true"/>
+            <Label fx:id="lblMensaje" styleClass="plan-form-error" wrapText="true" minHeight="20"/>
+        </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="plan-form-footer">
+            <Button fx:id="btnCancelar" text="Cancelar" onAction="#handleCancel" cancelButton="true"/>
+            <Button fx:id="btnGuardar" text="Guardar plan" onAction="#handleSave" defaultButton="true" styleClass="primary"/>
+        </HBox>
+    </bottom>
+</BorderPane>

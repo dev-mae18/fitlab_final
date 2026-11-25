@@ -33,7 +33,9 @@ CREATE TABLE planes (
     idplan INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL UNIQUE CHECK (length(trim(nombre)) > 0),
     precio REAL NOT NULL CHECK (precio > 0),
-    duracionDias INTEGER NOT NULL DEFAULT 30 CHECK (duracionDias > 0)
+    duracionDias INTEGER NOT NULL DEFAULT 30 CHECK (duracionDias > 0),
+    meses INTEGER NOT NULL DEFAULT 1 CHECK (meses BETWEEN 1 AND 12),
+    promocion INTEGER NOT NULL DEFAULT 0 CHECK (promocion IN (0, 1))
 );
 
 CREATE TABLE membresias (
@@ -48,6 +50,8 @@ CREATE TABLE membresias (
     activa INTEGER NOT NULL DEFAULT 1 CHECK (activa IN (0, 1)),
     renovaciones INTEGER NOT NULL DEFAULT 0 CHECK (renovaciones >= 0),
     meses INTEGER NOT NULL DEFAULT 1 CHECK (meses BETWEEN 1 AND 12),
+    precioMensual REAL CHECK (precioMensual > 0),
+    duracionDiasPlan INTEGER CHECK (duracionDiasPlan > 0),
     idusuario INTEGER NOT NULL,
     FOREIGN KEY (idcliente) REFERENCES clientes(idcliente) ON DELETE RESTRICT,
     FOREIGN KEY (idplan) REFERENCES planes(idplan) ON DELETE RESTRICT,

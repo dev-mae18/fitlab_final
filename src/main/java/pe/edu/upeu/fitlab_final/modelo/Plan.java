@@ -7,6 +7,8 @@ public class Plan {
     private final StringProperty nombre = new SimpleStringProperty();
     private final DoubleProperty precio = new SimpleDoubleProperty();
     private final IntegerProperty duracionDias = new SimpleIntegerProperty();
+    private final IntegerProperty meses = new SimpleIntegerProperty(1);
+    private final BooleanProperty promocion = new SimpleBooleanProperty(false);
 
     public Plan() {
     }
@@ -66,9 +68,44 @@ public class Plan {
         return duracionDias;
     }
 
+    public final int getMeses() {
+        return meses.get();
+    }
+
+    public final void setMeses(int value) {
+        meses.set(value);
+    }
+
+    public final IntegerProperty mesesProperty() {
+        return meses;
+    }
+
+    public final boolean isPromocion() {
+        return promocion.get();
+    }
+
+    public final void setPromocion(boolean value) {
+        promocion.set(value);
+    }
+
+    public final BooleanProperty promocionProperty() {
+        return promocion;
+    }
+
+    public double getPrecioMensual() {
+        return getPrecio() / (isPromocion() ? getMeses() : 1);
+    }
+
+    public double calcularImporte(int mesesContratados) {
+        return Math.round(getPrecioMensual() * mesesContratados * 100.0) / 100.0;
+    }
+
     @Override
     public String toString() {
-        return getNombre() + " - S/ " + String.format("%.2f", getPrecio());
+        if (isPromocion()) {
+            return getNombre() + " - Pack " + getMeses() + " meses - S/ " + String.format("%.2f", getPrecio()) + " total";
+        }
+        return getNombre() + " - S/ " + String.format("%.2f", getPrecio()) + " mensual";
     }
 }
 

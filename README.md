@@ -18,6 +18,7 @@ FitLab es un sistema de escritorio para la administración de un gimnasio, desar
 - Registro, edición, búsqueda y consulta detallada de socios.
 - Registro y administración de entrenadores y sus horarios.
 - Asignación de membresías con una duración de 1 a 12 meses.
+- Configuración de nombres y precios de los planes, y creación de planes mensuales o packs promocionales.
 - Selección de plan, horario, días de asistencia y entrenador.
 - Renovación y reactivación de membresías.
 - Migración de planes con cálculo proporcional según los días restantes.
@@ -45,6 +46,14 @@ Una base nueva y vacía recibe un administrador y estos planes de 30 días:
 | BASICO | S/ 50.00 |
 | PREMIUM | S/ 80.00 |
 | VIP | S/ 120.00 |
+
+### Configuración de planes
+
+La opción **Configuración**, encima de **Mi cuenta**, permite crear y editar planes. Los tres planes iniciales se conservan; las promociones se crean desde esa pantalla.
+
+En un plan mensual se registra el precio por mes. En una promoción se registra el precio total del pack y su duración, entre 2 y 12 meses. Al seleccionar una promoción en una membresía se fija automáticamente la duración del pack y se aplica el descuento de estudiante cuando corresponde.
+
+Las membresías guardan su precio y duración contratados, de modo que editar el catálogo no cambia sus importes anteriores. Las nuevas contrataciones y renovaciones utilizan los precios vigentes. Un plan que ya tenga membresías permite editar su nombre y precio; para ofrecer otro tipo o duración se crea un plan nuevo.
 
 ### Migración de la ubicación anterior
 

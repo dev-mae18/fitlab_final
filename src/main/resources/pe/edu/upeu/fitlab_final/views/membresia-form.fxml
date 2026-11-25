@@ -15,7 +15,7 @@
         <Label text="Socio" GridPane.rowIndex="0"/>
         <ComboBox fx:id="cbxCliente" promptText="Socios sin membresía" onAction="#actualizarImporte" maxWidth="Infinity" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
         <Label text="Plan" GridPane.rowIndex="1"/>
-        <ComboBox fx:id="cbxPlan" onAction="#actualizarImporte" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <ComboBox fx:id="cbxPlan" onAction="#handlePlan" maxWidth="Infinity" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
         <Label text="Tiempo" GridPane.rowIndex="2"/>
         <ComboBox fx:id="cbxMeses" onAction="#actualizarImporte" maxWidth="Infinity" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
         <Label text="Horario" GridPane.rowIndex="3"/>

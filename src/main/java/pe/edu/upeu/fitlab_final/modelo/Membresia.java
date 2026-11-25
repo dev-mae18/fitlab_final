@@ -18,6 +18,8 @@ public class Membresia {
     private final IntegerProperty renovaciones = new SimpleIntegerProperty();
     private final IntegerProperty meses = new SimpleIntegerProperty(1);
     private final IntegerProperty idUsuario = new SimpleIntegerProperty();
+    private final DoubleProperty precioMensual = new SimpleDoubleProperty();
+    private final IntegerProperty duracionDiasPlan = new SimpleIntegerProperty();
 
     public Membresia() {
     }
@@ -204,6 +206,36 @@ public class Membresia {
         return meses;
     }
 
+    public final double getPrecioMensual() {
+        if (precioMensual.get() == 0 && getPlan() != null) return getPlan().getPrecioMensual();
+        return precioMensual.get();
+    }
+
+    public final void setPrecioMensual(double value) {
+        precioMensual.set(value);
+    }
+
+    public final DoubleProperty precioMensualProperty() {
+        return precioMensual;
+    }
+
+    public final int getDuracionDiasPlan() {
+        if (duracionDiasPlan.get() == 0 && getPlan() != null) return getPlan().getDuracionDias();
+        return duracionDiasPlan.get();
+    }
+
+    public final void setDuracionDiasPlan(int value) {
+        duracionDiasPlan.set(value);
+    }
+
+    public final IntegerProperty duracionDiasPlanProperty() {
+        return duracionDiasPlan;
+    }
+
+    public double calcularSubtotal() {
+        return Math.round(getPrecioMensual() * getMeses() * 100.0) / 100.0;
+    }
+
     public long getDiasRestantes() {
         if (getFechaVencimiento() == null) return 0;
         long dias = getFechaVencimiento().toEpochDay() - LocalDate.now().toEpochDay();
@@ -212,10 +244,10 @@ public class Membresia {
     }
 
     public double calcularImporteMigracion(Plan nuevoPlan) {
-        if (getPlan() == null || nuevoPlan == null || getPlan().getDuracionDias() <= 0) return 0;
-        double diferencia = nuevoPlan.getPrecio() - getPlan().getPrecio();
+        if (nuevoPlan == null || getDuracionDiasPlan() <= 0) return 0;
+        double diferencia = nuevoPlan.getPrecioMensual() - getPrecioMensual();
         if (diferencia < 0) diferencia = 0;
-        return diferencia * getDiasRestantes() / getPlan().getDuracionDias();
+        return Math.round(diferencia * getDiasRestantes() / getDuracionDiasPlan() * 100.0) / 100.0;
     }
 
     public final int getIdUsuario() {

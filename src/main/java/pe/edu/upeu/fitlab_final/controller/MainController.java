@@ -27,6 +27,7 @@ public class MainController {
     @FXML private void showMembresias() { loadView("membresia-view.fxml"); }
     @FXML private void showComprobantes() { loadView("comprobante-view.fxml"); }
     @FXML private void showInformes() { loadView("informe-view.fxml"); }
+    @FXML private void showConfiguracion() { loadView("configuracion-view.fxml"); }
     @FXML private void showCuenta() { loadView("cuenta-view.fxml"); }
 
     private void loadView(String fxml) {

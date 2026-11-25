@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="pe.edu.upeu.fitlab_final.controller.ConfiguracionController" stylesheets="@style.css" styleClass="configuracion" spacing="18" prefWidth="980" prefHeight="650" minWidth="0" minHeight="0">
+    <VBox spacing="5">
+        <Label text="Configuración" styleClass="page-title"/>
+        <Label text="Administra los planes y las promociones de FitLab." styleClass="subtitle" wrapText="true"/>
+    </VBox>
+    <HBox spacing="14">
+        <VBox spacing="6" minWidth="170" styleClass="configuracion-stat">
+            <Label text="Planes en el catálogo" styleClass="configuracion-caption"/>
+            <Label fx:id="lblTotalPlanes" text="0" styleClass="configuracion-valor"/>
+        </VBox>
+        <VBox spacing="6" minWidth="170" styleClass="configuracion-stat">
+            <Label text="Promociones" styleClass="configuracion-caption"/>
+            <Label fx:id="lblPromociones" text="0" styleClass="configuracion-valor"/>
+        </VBox>
+        <VBox spacing="6" HBox.hgrow="ALWAYS" styleClass="configuracion-ayuda">
+            <Label text="Mensual o por paquete" styleClass="configuracion-ayuda-titulo"/>
+            <Label text="Un plan mensual cobra por mes. Una promoción fija el precio total y la duración del paquete." styleClass="configuracion-caption" wrapText="true"/>
+        </VBox>
+    </HBox>
+    <VBox spacing="14" VBox.vgrow="ALWAYS" minHeight="0" styleClass="configuracion-panel">
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <Label text="Catálogo de planes" styleClass="section-title" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Label fx:id="lblResultados" text="0 planes en la lista" styleClass="configuracion-caption"/>
+        </HBox>
+        <HBox spacing="10">
+            <TextField fx:id="txtBuscar" promptText="Buscar por nombre o tipo de plan" onAction="#handleSearch" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnBuscar" text="Buscar" onAction="#handleSearch"/>
+            <Button fx:id="btnNuevoPlan" text="Nuevo plan" onAction="#handleNew" styleClass="primary"/>
+        </HBox>
+        <TableView fx:id="tablePlanes" VBox.vgrow="ALWAYS" minHeight="140">
+            <placeholder>
+                <Label text="No hay planes para mostrar. Puede crear uno con Nuevo plan." styleClass="configuracion-caption" wrapText="true"/>
+            </placeholder>
+            <columns>
+                <TableColumn fx:id="colNumero" text="N°" prefWidth="48" minWidth="45" maxWidth="60"/>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200" minWidth="120"/>
+                <TableColumn fx:id="colTipo" text="Tipo" prefWidth="110" minWidth="100"/>
+                <TableColumn fx:id="colDuracion" text="Duración" prefWidth="150" minWidth="125"/>
+                <TableColumn fx:id="colPrecio" text="Precio" prefWidth="165" minWidth="140"/>
+                <TableColumn fx:id="colEquivalente" text="Equivalente mensual" prefWidth="160" minWidth="145"/>
+            </columns>
+        </TableView>
+        <HBox alignment="CENTER_LEFT" spacing="18">
+            <Label text="Los cambios de precio se aplican a nuevas contrataciones. Las membresías registradas conservan su importe pactado." styleClass="configuracion-caption" wrapText="true" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button fx:id="btnEditarPlan" text="Editar seleccionado" onAction="#handleEdit"/>
+        </HBox>
+    </VBox>
+</VBox>

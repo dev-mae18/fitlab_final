@@ -64,7 +64,7 @@ public class MembresiaController {
         colCliente.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCliente().getNombre() + " " + c.getValue().getCliente().getApellidos()));
         colDni.setCellValueFactory(c -> c.getValue().getCliente().dniProperty());
         colPlan.setCellValueFactory(c -> c.getValue().getPlan().nombreProperty());
-        colPrecio.setCellValueFactory(c -> new SimpleStringProperty(String.format("S/ %.2f", c.getValue().getPlan().getPrecio())));
+        colPrecio.setCellValueFactory(c -> new SimpleStringProperty(String.format("S/ %.2f", c.getValue().getPrecioMensual())));
         colTiempo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getMeses() == 1 ? "1 mes" : c.getValue().getMeses() + " meses"));
         colHorario.setCellValueFactory(c -> new SimpleStringProperty(Entrenador.describirTurno(c.getValue().getHorario())));
         colDias.setCellValueFactory(c -> new SimpleStringProperty(Membresia.describirDias(c.getValue().getTipoDias())));
@@ -158,6 +158,16 @@ public class MembresiaController {
     private boolean confirmar(String accion, Membresia m) {
         String mensaje = "¿Desea " + accion.toLowerCase() + " la membresía de " + m.getCliente().getNombre() + " " + m.getCliente().getApellidos() + "?";
         if ("Cancelar".equals(accion)) mensaje += "\n\nSe anulará el último comprobante de pago asociado, si existe." + detalleComprobante(m);
+        if ("Renovar".equals(accion)) {
+            Plan planActual = planDao.searchById(m.getPlan().getIdplan());
+            if (planActual == null) {
+                informar("Plan no disponible", "No se pudo consultar el precio actual del plan.");
+                return false;
+            }
+            double subtotal = planActual.calcularImporte(m.getMeses());
+            double total = subtotal - m.getCliente().calcularDescuento(subtotal);
+            mensaje += String.format("\n\nPrecio de renovación: S/ %.2f. Se utilizará el precio actual del plan.", total);
+        }
         return UtilAlerts.mostrarAlerts("Confirmar " + accion, mensaje, "CONFIRMATION").showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK;
     }
 
@@ -209,10 +219,18 @@ public class MembresiaController {
         if (elegida != solo) return;
         Boolean conservarVigencia = elegirVigencia(m);
         if (conservarVigencia == null) return;
+        Plan planActual = m.getPlan();
+        if (!conservarVigencia) {
+            planActual = planDao.searchById(m.getPlan().getIdplan());
+            if (planActual == null) {
+                informar("Plan no disponible", "No se pudo consultar el precio actual del plan.");
+                return;
+            }
+        }
         LocalDate inicio = conservarVigencia ? m.getFechaInicio() : LocalDate.now();
-        LocalDate vencimiento = conservarVigencia ? m.getFechaVencimiento() : inicio.plusDays((long) m.getPlan().getDuracionDias() * m.getMeses());
+        LocalDate vencimiento = conservarVigencia ? m.getFechaVencimiento() : inicio.plusDays((long) planActual.getDuracionDias() * m.getMeses());
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        double subtotal = m.getPlan().getPrecio() * m.getMeses();
+        double subtotal = conservarVigencia ? m.calcularSubtotal() : planActual.calcularImporte(m.getMeses());
         double total = subtotal - m.getCliente().calcularDescuento(subtotal);
         String mensaje = "¿Reactivar la membresía de " + m.getCliente().getNombre() + " " + m.getCliente().getApellidos() + "?\n\nVigencia: " + inicio.format(formato) + " – " + vencimiento.format(formato) + ".\nPlan: " + m.getPlan().getNombre() + ".\nTiempo: " + (m.getMeses() == 1 ? "1 mes" : m.getMeses() + " meses") + String.format(".\nNuevo pago: S/ %.2f.", total) + "\nSe generará un nuevo comprobante de pago en estado Enviado.";
         Alert confirmacion = UtilAlerts.mostrarAlerts("Confirmar reactivación", mensaje, "CONFIRMATION");
@@ -231,7 +249,7 @@ public class MembresiaController {
         dialog.initOwner(tableMembresia.getScene().getWindow());
         dialog.setTitle("Vigencia de reactivación");
         dialog.setHeaderText("Elija la vigencia de la membresía");
-        String texto = "Vigencia original: " + m.getFechaInicio().format(formato) + " – " + m.getFechaVencimiento().format(formato) + ".\nDesde hoy: " + hoy.format(formato) + " – " + hoy.plusDays((long) m.getPlan().getDuracionDias() * m.getMeses()).format(formato) + ".";
+        String texto = "Vigencia original: " + m.getFechaInicio().format(formato) + " – " + m.getFechaVencimiento().format(formato) + ".\nDesde hoy: " + hoy.format(formato) + " – " + hoy.plusDays((long) m.getDuracionDiasPlan() * m.getMeses()).format(formato) + ".";
         boolean vencida = m.getFechaVencimiento().isBefore(hoy);
         if (vencida) texto += "\n\nLa vigencia original ya venció. Puede iniciar desde hoy o cancelar para elegir una nueva membresía.";
         Label fechas = new Label(texto);
@@ -279,12 +297,12 @@ public class MembresiaController {
         }
         List<Plan> planes = new ArrayList<>();
         for (Plan plan : planDao.listAll()) {
-            if (plan.getIdplan() != m.getPlan().getIdplan()) {
+            if (plan.getIdplan() != m.getPlan().getIdplan() && (!plan.isPromocion() || plan.getMeses() == m.getMeses())) {
                 planes.add(plan);
             }
         }
         if (planes.isEmpty()) {
-            informar("Planes disponibles", "No hay otros planes disponibles para esta membresía.");
+            informar("Planes disponibles", "No hay otros planes compatibles con la duración contratada de esta membresía.");
             return;
         }
         ChoiceDialog<Plan> dialog = new ChoiceDialog<>(planes.get(0), planes);

@@ -94,10 +94,10 @@ public class ClienteDatosController {
             lblEstado.setText(estado);
             lblEstado.getStyleClass().add(clase);
             DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            double subtotal = membresia.getPlan().getPrecio() * membresia.getMeses();
+            double subtotal = membresia.calcularSubtotal();
             double descuento = cliente.calcularDescuento(subtotal);
             lblPlan.setText(membresia.getPlan().getNombre());
-            lblPrecio.setText(String.format("S/ %.2f", membresia.getPlan().getPrecio()));
+            lblPrecio.setText(String.format("S/ %.2f", membresia.getPrecioMensual()));
             lblMeses.setText(membresia.getMeses() == 1 ? "1 mes" : membresia.getMeses() + " meses");
             lblHorario.setText(Entrenador.describirTurno(membresia.getHorario()));
             lblDias.setText(Membresia.describirDias(membresia.getTipoDias()));

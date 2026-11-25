@@ -128,7 +128,7 @@ public class MembresiaFormController {
                 cbxEntrenador.setValue(entrenadorSeleccionado);
             }
         }
-        actualizarImporte();
+        handlePlan();
     }
 
     public void setNuevaMembresia(Membresia anterior) {
@@ -137,6 +137,20 @@ public class MembresiaFormController {
         cbxPlan.setDisable(false);
         cbxMeses.setDisable(false);
         lblNota.setText("La nueva membresía comienza hoy. Puede elegir el plan, horario y días de asistencia; se generará un nuevo comprobante de pago.");
+        handlePlan();
+    }
+
+    @FXML
+    private void handlePlan() {
+        Plan plan = cbxPlan.getValue();
+        boolean edicion = !nuevoRegistro && !nuevaAdquisicion;
+        if (!edicion && plan != null && plan.isPromocion()) {
+            cbxMeses.setValue(plan.getMeses() + " meses");
+            cbxMeses.setDisable(true);
+        } else {
+            cbxMeses.setDisable(edicion);
+        }
+        actualizarImporte();
     }
 
     @FXML
@@ -153,9 +167,15 @@ public class MembresiaFormController {
             return;
         }
         int meses = Integer.parseInt(cbxMeses.getValue().split(" ")[0]);
-        double subtotal = p.getPrecio() * meses;
+        boolean edicion = !nuevoRegistro && !nuevaAdquisicion;
+        double subtotal = edicion ? membresia.calcularSubtotal() : p.calcularImporte(meses);
         double descuento = c.calcularDescuento(subtotal);
-        lblImporte.setText(String.format("Precio mensual: S/ %.2f · Tiempo: %s · Subtotal: S/ %.2f · Descuento: S/ %.2f · Total: S/ %.2f", p.getPrecio(), cbxMeses.getValue(), subtotal, descuento, subtotal - descuento));
+        if (!edicion && p.isPromocion()) {
+            lblImporte.setText(String.format("Pack promocional: %s · Precio del pack: S/ %.2f · Descuento: S/ %.2f · Total: S/ %.2f", cbxMeses.getValue(), subtotal, descuento, subtotal - descuento));
+        } else {
+            double precioMensual = edicion ? membresia.getPrecioMensual() : p.getPrecioMensual();
+            lblImporte.setText(String.format("Precio mensual%s: S/ %.2f · Tiempo: %s · Subtotal: S/ %.2f · Descuento: S/ %.2f · Total: S/ %.2f", edicion ? " contratado" : "", precioMensual, cbxMeses.getValue(), subtotal, descuento, subtotal - descuento));
+        }
     }
 
     private boolean validate() {
@@ -165,6 +185,12 @@ public class MembresiaFormController {
         }
         if (chkEntrenador.isSelected() && !cbxHorario.getValue().equals(Entrenador.describirTurno(cbxEntrenador.getValue().getTurno()))) {
             UtilAlerts.mostrarAlerts("Turno del entrenador", "Seleccione un entrenador del mismo turno que la membresía.", "WARNING").showAndWait();
+            return false;
+        }
+        Plan plan = cbxPlan.getValue();
+        int meses = Integer.parseInt(cbxMeses.getValue().split(" ")[0]);
+        if ((nuevoRegistro || nuevaAdquisicion) && plan.isPromocion() && meses != plan.getMeses()) {
+            UtilAlerts.mostrarAlerts("Duración del pack", "Esta promoción se contrata por " + plan.getMeses() + " meses.", "WARNING").showAndWait();
             return false;
         }
         return true;
