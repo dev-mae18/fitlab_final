@@ -67,9 +67,7 @@ Estas credenciales corresponden a una base nueva y vacía. Si se migró una base
 
 ## Requisitos
 
-Para utilizar el instalador de Windows no se necesita instalar JDK, Maven ni SQLite: el paquete incluye el runtime de Java y las dependencias, y FitLab prepara la base de datos automáticamente.
-
-Para desarrollar o ejecutar el código fuente:
+Para ejecutar el código fuente:
 
 - JDK 21 instalado.
 - Maven Wrapper incluido en `.mvn/wrapper`, utilizado por `iniciar.bat`, o una instalación de Maven.
@@ -102,55 +100,11 @@ mvn javafx:run
 
 Este comando requiere Maven instalado; `iniciar.bat` utiliza el wrapper incluido.
 
-## Empaquetado para Windows
+## Preparación para WiX
 
-El comando `empaquetar.bat` invoca la implementación `empaquetar.ps1` con JDK 21 y `jpackage`. El lanzador permite ejecutar el script aunque PowerShell bloquee archivos `.ps1`: aplica la opción de ejecución únicamente a ese proceso, sin cambiar la política global. Para generar el instalador `.exe` también se necesita WiX Toolset 3.14, con las herramientas `candle.exe` y `light.exe` de la serie 3.x. La opción `app-image` no requiere WiX.
+El `pom.xml` configura Java 21 y copia las dependencias de ejecución a `target/libs` durante `mvn package`. La clase `Launcher` es el punto de entrada para el empaquetado modular con `jpackage`.
 
-El script usa `JAVA_HOME` o busca un JDK 21 dentro de `C:\Program Files\Java`. Busca WiX en su ubicación estándar o en el `PATH` del proceso, sin modificar el `PATH` global. Se pueden indicar rutas manuales mediante `-JavaHome` y `-WixBin`.
-
-### Generar el instalador
-
-Desde la carpeta `fitlab_final`, ejecutar:
-
-```powershell
-.\empaquetar.bat
-```
-
-El flujo ejecuta `clean package`, copia las dependencias de ejecución a `target/libs` y genera el instalador con `jpackage`. Con la versión predeterminada `1.0.0`, el archivo de salida es:
-
-```text
-target\dist\FitLab-1.0.0.exe
-```
-
-El proyecto conserva su estructura modular. El punto de entrada para empaquetar es `Launcher`, que delega en la aplicación JavaFX. El plugin `maven-dependency-plugin` 3.6.1 prepara las bibliotecas en `target/libs` durante `package`.
-
-### Generar una aplicación sin instalador
-
-```powershell
-.\empaquetar.bat -Tipo app-image
-```
-
-La aplicación con su runtime queda en `target\app-image\FitLab`; se inicia mediante `target\app-image\FitLab\FitLab.exe`. Para distribuir esta opción se debe copiar la carpeta completa, no solamente el ejecutable.
-
-### Opciones del script
-
-| Opción | Uso |
-| --- | --- |
-| `-SinCompilar` | Reutiliza el JAR y `target/libs` ya construidos, y vuelve a ejecutar `jpackage` sin recompilar. |
-| `-SinConexion` | Ejecuta Maven en modo offline; requiere todas las dependencias y plugins en la caché local. |
-| `-JavaHome "C:\ruta\al\jdk-21"` | Selecciona manualmente el JDK 21. |
-| `-WixBin "C:\ruta\a\WiX\bin"` | Selecciona la carpeta de `candle.exe` y `light.exe` 3.x. |
-| `-Version 1.0.0` | Define la versión del paquete; `1.0.0` es el valor predeterminado. |
-
-Por ejemplo, después de construir la aplicación, se puede reutilizar su compilación para generar el instalador:
-
-```powershell
-.\empaquetar.bat -SinCompilar
-```
-
-El script evita sobrescribir una salida que ya existe. Para reconstruir todo se puede ejecutar sin `-SinCompilar`; para conservar la compilación y generar otro instalador, se puede indicar una `-Version` diferente.
-
-La preparación sigue la guía local de empaquetado utilizada para el proyecto, cuyo PDF no se incluye en el repositorio. Como referencias se utilizan el [proyecto del profesor y su configuración Maven](https://github.com/arlysanchez/poo_2026_2_final/blob/master/pom.xml) y la [documentación de jpackage para JDK 21](https://docs.oracle.com/en/java/javase/21/docs/specs/man/jpackage.html).
+Para crear posteriormente un instalador de Windows se necesita WiX Toolset 3.14, con `candle.exe` y `light.exe` disponibles en el `PATH`.
 
 ## Estructura del código
 
@@ -164,10 +118,9 @@ fitlab_final/
 │   ├── test/             Pruebas con la base de datos real
 │   └── utils/            Conexión y utilidades
 ├── src/main/resources/pe/edu/upeu/fitlab_final/
+│   ├── database/         Esquema inicial de SQLite
 │   └── views/            Archivos FXML y estilos CSS
 ├── iniciar.bat
-├── empaquetar.bat        Lanzador del empaquetado para Windows
-├── empaquetar.ps1        Generación de app-image e instalador de Windows
 ├── sqlite_comando.txt    Referencia del esquema de la base de datos
 └── pom.xml
 ```

@@ -1,5 +1,12 @@
 target/
 .idea/
 *.iml
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+*.exe
+*.msi
+*.db
+*.db-*
 
 
