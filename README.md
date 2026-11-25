@@ -5,9 +5,9 @@ FitLab es un sistema de escritorio para la administración de un gimnasio, desar
 ## Tecnologías utilizadas
 
 - Java 21
-- JavaFX 21
+- JavaFX 21.0.6
 - FXML y CSS
-- SQLite 3
+- SQLite mediante JDBC 3.42.0.0
 - JDBC
 - Maven
 - IntelliJ IDEA
@@ -28,60 +28,51 @@ FitLab es un sistema de escritorio para la administración de un gimnasio, desar
 
 ## Base de datos
 
-El sistema se conecta directamente al siguiente archivo SQLite:
+FitLab prepara automáticamente su base de datos en la carpeta del usuario de Windows:
 
 ```text
-C:\sqlite\db\fitlab.db
+%USERPROFILE%\FitLab\fitlab.db
 ```
 
-La base de datos almacena usuarios, socios, entrenadores, planes, membresías y comprobantes.
+La ruta se calcula a partir de `user.home`. No hace falta instalar SQLite, crear carpetas ni ejecutar SQL manualmente: la aplicación crea la carpeta y las seis tablas `usuarios`, `clientes`, `entrenadores`, `planes`, `membresias` y `comprobantes` cuando se conecta.
 
-### Programa recomendado
+### Datos iniciales
 
-Se recomienda instalar **DB Browser for SQLite** para crear y administrar la base de datos mediante una interfaz gráfica. También se puede utilizar la consola oficial de SQLite.
+Una base nueva y vacía recibe un administrador y estos planes de 30 días:
 
-### Crear la base de datos con DB Browser for SQLite
+| Plan | Precio |
+| --- | ---: |
+| BASICO | S/ 50.00 |
+| PREMIUM | S/ 80.00 |
+| VIP | S/ 120.00 |
 
-1. Crear la carpeta `C:\sqlite\db` si todavía no existe.
-2. Abrir DB Browser for SQLite.
-3. Seleccionar **Nueva base de datos**.
-4. Ingresar a la carpeta `C:\sqlite\db`.
-5. Guardar la base con el nombre exacto `fitlab.db`.
-6. Si aparece la ventana para crear una tabla manualmente, cerrarla sin crear ninguna tabla.
-7. Abrir la pestaña **Ejecutar SQL**.
-8. Abrir el archivo `fitlab_final/sqlite_comando.txt` y copiar todo su contenido.
-9. Pegar el código en el editor SQL.
-10. Presionar el botón **Ejecutar todas las sentencias SQL**.
-11. Seleccionar **Escribir cambios** para guardar la estructura dentro de `fitlab.db`.
-12. Revisar la pestaña **Estructura de la base de datos**. Deben aparecer las tablas `usuarios`, `clientes`, `entrenadores`, `planes`, `membresias` y `comprobantes`.
+### Migración de la ubicación anterior
 
-El archivo `sqlite_comando.txt` contiene solamente la estructura de la base de datos. No incluye registros de prueba ni instrucciones para abrir una ruta específica, por lo que debe ejecutarse después de crear y abrir `fitlab.db`.
+Si la nueva base todavía no existe y se encuentra `C:\sqlite\db\fitlab.db`, FitLab copia automáticamente esa base a la nueva ubicación. La migración conserva sus registros y credenciales, sin sobrescribir ni borrar el archivo original.
 
-### Crear la base de datos con la consola de SQLite
+La copia se realiza una sola vez: cuando la base de destino ya existe, FitLab utiliza esa base y no vuelve a importar la anterior. Los datos iniciales no sustituyen usuarios, contraseñas ni planes existentes.
 
-Desde una terminal ubicada en la carpeta `fitlab_final`, ejecutar:
+### Ruta alternativa para pruebas
 
-```powershell
-sqlite3 C:\sqlite\db\fitlab.db ".read sqlite_comando.txt"
-```
-
-La ruta y el nombre deben conservarse exactamente porque la clase `ConexionDB` utiliza `C:/sqlite/db/fitlab.db`.
+La propiedad Java opcional `-Dfitlab.db.path=RUTA_DEL_ARCHIVO` permite usar otra base, por ejemplo en pruebas aisladas. Al indicar esta propiedad no se importa automáticamente la base de `C:\sqlite\db`; se prepara únicamente el archivo elegido. `sqlite_comando.txt` se conserva como referencia del esquema.
 
 ## Credenciales de acceso
 
 ```text
 Usuario: admin
-Contraseña: 12345
+Contraseña: admin123
 ```
 
-Estas credenciales corresponden a la base de datos utilizada por el proyecto. Una base recién creada mediante `sqlite_comando.txt` queda vacía; por ello, el usuario administrador y los planes deben registrarse posteriormente antes de utilizar todas las funciones del sistema.
+Estas credenciales corresponden a una base nueva y vacía. Si se migró una base anterior, se mantienen sus credenciales, incluida cualquier contraseña que ya se hubiera cambiado.
 
 ## Requisitos
 
+Para ejecutar el código fuente:
+
 - JDK 21 instalado.
-- SQLite 3 o DB Browser for SQLite.
-- Tener creado el archivo `C:\sqlite\db\fitlab.db` con la estructura de `sqlite_comando.txt`.
-- IntelliJ IDEA o Maven para ejecutar el proyecto.
+- Maven Wrapper incluido en `.mvn/wrapper`, utilizado por `iniciar.bat`, o una instalación de Maven.
+- Acceso a Internet la primera vez para descargar las dependencias, o una caché de Maven ya preparada.
+- IntelliJ IDEA es opcional.
 
 ## Ejecución
 
@@ -93,17 +84,27 @@ Estas credenciales corresponden a la base de datos utilizada por el proyecto. Un
 
 ### Desde Windows
 
-Dentro de la carpeta `fitlab_final`, ejecutar:
+Dentro de la carpeta `fitlab_final`, ejecutar en PowerShell:
 
-```text
-iniciar.bat
+```powershell
+.\iniciar.bat
 ```
+
+Este archivo utiliza el Maven Wrapper del proyecto para iniciar JavaFX con JDK 21.
 
 ### Con Maven
 
 ```bash
 mvn javafx:run
 ```
+
+Este comando requiere Maven instalado; `iniciar.bat` utiliza el wrapper incluido.
+
+## Preparación para WiX
+
+El `pom.xml` configura Java 21 y copia las dependencias de ejecución a `target/libs` durante `mvn package`. La clase `Launcher` es el punto de entrada para el empaquetado modular con `jpackage`.
+
+Para crear posteriormente un instalador de Windows se necesita WiX Toolset 3.14, con `candle.exe` y `light.exe` disponibles en el `PATH`.
 
 ## Estructura del código
 
@@ -117,7 +118,9 @@ fitlab_final/
 │   ├── test/             Pruebas con la base de datos real
 │   └── utils/            Conexión y utilidades
 ├── src/main/resources/pe/edu/upeu/fitlab_final/
+│   ├── database/         Esquema inicial de SQLite
 │   └── views/            Archivos FXML y estilos CSS
 ├── iniciar.bat
+├── sqlite_comando.txt    Referencia del esquema de la base de datos
 └── pom.xml
 ```
