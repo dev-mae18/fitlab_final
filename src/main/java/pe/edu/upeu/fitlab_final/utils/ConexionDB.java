@@ -74,6 +74,9 @@ public class ConexionDB {
                 "idusuario INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "usuario TEXT NOT NULL UNIQUE CHECK (length(trim(usuario)) > 0), " +
                 "contrasena TEXT NOT NULL, " +
+                "nombre TEXT NOT NULL DEFAULT '', " +
+                "apellidos TEXT NOT NULL DEFAULT '', " +
+                "dni TEXT NOT NULL DEFAULT '', " +
                 "activo INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0, 1)));";
 
         String sqlCliente = "CREATE TABLE IF NOT EXISTS clientes (" +
@@ -179,6 +182,15 @@ public class ConexionDB {
 
     private static void actualizarEstructura() throws SQLException {
         try (Statement stmt = connection.createStatement()) {
+            if (!existeColumna("usuarios", "nombre")) {
+                stmt.execute("ALTER TABLE usuarios ADD COLUMN nombre TEXT NOT NULL DEFAULT ''");
+            }
+            if (!existeColumna("usuarios", "apellidos")) {
+                stmt.execute("ALTER TABLE usuarios ADD COLUMN apellidos TEXT NOT NULL DEFAULT ''");
+            }
+            if (!existeColumna("usuarios", "dni")) {
+                stmt.execute("ALTER TABLE usuarios ADD COLUMN dni TEXT NOT NULL DEFAULT ''");
+            }
             if (!existeColumna("planes", "meses")) {
                 stmt.execute("ALTER TABLE planes ADD COLUMN meses INTEGER NOT NULL DEFAULT 1 CHECK (meses BETWEEN 1 AND 12)");
             }
