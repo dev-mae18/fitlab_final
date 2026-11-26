@@ -17,6 +17,7 @@ La versión **1.0.0 para Windows de 64 bits** está disponible en [GitHub Releas
 ## Funcionalidades
 
 - Inicio de sesión de administrador.
+- Una sola instancia abierta por usuario de Windows, con aviso al intentar abrir otra.
 - Registro, edición, búsqueda y consulta detallada de socios.
 - Registro y administración de entrenadores y sus horarios.
 - Asignación de membresías con una duración de 1 a 12 meses.
@@ -103,6 +104,8 @@ Para ejecutar el código fuente:
 4. Abrir FitLab desde el escritorio o el menú Inicio.
 
 La base de datos se prepara automáticamente al abrir el programa. Las credenciales `admin / admin123` corresponden a una base nueva; una base existente conserva sus credenciales.
+
+FitLab permite una sola instancia abierta por usuario. Si se intenta abrir otra, muestra el aviso **FitLab ya está abierto**. Al cerrar la aplicación se puede volver a abrir normalmente.
 
 ### Desde IntelliJ IDEA
 
