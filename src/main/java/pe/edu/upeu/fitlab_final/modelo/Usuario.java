@@ -2,7 +2,7 @@ package pe.edu.upeu.fitlab_final.modelo;
 
 import javafx.beans.property.*;
 
-public class Usuario {
+public class Usuario extends Persona {
     private final IntegerProperty idusuario = new SimpleIntegerProperty();
     private final StringProperty usuario = new SimpleStringProperty();
 
@@ -10,6 +10,12 @@ public class Usuario {
     }
 
     public Usuario(int idusuario, String usuario) {
+        setIdusuario(idusuario);
+        setUsuario(usuario);
+    }
+
+    public Usuario(String nombre, String apellidos, String dni, int idusuario, String usuario) {
+        super(nombre, apellidos, dni);
         setIdusuario(idusuario);
         setUsuario(usuario);
     }
