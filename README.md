@@ -2,6 +2,8 @@
 
 FitLab es un sistema de escritorio para la administración de un gimnasio, desarrollado en Java con JavaFX y SQLite. El proyecto permite gestionar socios, entrenadores, membresías, comprobantes de pago e informes desde una interfaz gráfica.
 
+La versión **1.0.0 para Windows de 64 bits** está disponible en [GitHub Releases](https://github.com/dev-mae18/fitlab_final/releases/tag/v1.0.0). Puedes descargar el [instalador FitLab-1.0.0.exe](https://github.com/dev-mae18/fitlab_final/releases/download/v1.0.0/FitLab-1.0.0.exe); incluye Java 21.
+
 ## Tecnologías utilizadas
 
 - Java 21
@@ -59,7 +61,11 @@ Las membresías guardan su precio y duración contratados, de modo que editar el
 
 Si la nueva base todavía no existe y se encuentra `C:\sqlite\db\fitlab.db`, FitLab copia automáticamente esa base a la nueva ubicación. La migración conserva sus registros y credenciales, sin sobrescribir ni borrar el archivo original.
 
-La copia se realiza una sola vez: cuando la base de destino ya existe, FitLab utiliza esa base y no vuelve a importar la anterior. Los datos iniciales no sustituyen usuarios, contraseñas ni planes existentes.
+FitLab solo importa la base anterior cuando no existe el archivo de destino. Si se borra la base nueva y la antigua sigue presente, volverá a importarla al abrir. Los datos iniciales no sustituyen usuarios, contraseñas ni planes existentes.
+
+### Desinstalación
+
+El desinstalador elimina el programa, el Java incluido y sus accesos directos. La base de datos de `%USERPROFILE%\FitLab\fitlab.db` se conserva, por lo que una reinstalación permite continuar con los datos anteriores.
 
 ### Ruta alternativa para pruebas
 
@@ -76,6 +82,8 @@ Estas credenciales corresponden a una base nueva y vacía. Si se migró una base
 
 ## Requisitos
 
+Para utilizar el instalador se necesita Windows de 64 bits. El paquete incluye Java 21; no requiere instalar Java, Maven, WiX ni SQLite por separado.
+
 Para ejecutar el código fuente:
 
 - JDK 21 instalado.
@@ -84,6 +92,15 @@ Para ejecutar el código fuente:
 - IntelliJ IDEA es opcional.
 
 ## Ejecución
+
+### Con el instalador
+
+1. Descargar [FitLab-1.0.0.exe desde Releases](https://github.com/dev-mae18/fitlab_final/releases/download/v1.0.0/FitLab-1.0.0.exe).
+2. Ejecutar el instalador.
+3. Completar la instalación. La carpeta predeterminada es `C:\Program Files\FitLab`.
+4. Abrir FitLab desde el escritorio o el menú Inicio.
+
+La base de datos se prepara automáticamente al abrir el programa. Las credenciales `admin / admin123` corresponden a una base nueva; una base existente o importada conserva sus credenciales.
 
 ### Desde IntelliJ IDEA
 
@@ -109,11 +126,32 @@ mvn javafx:run
 
 Este comando requiere Maven instalado; `iniciar.bat` utiliza el wrapper incluido.
 
-## Preparación para WiX
+## Empaquetado para Windows
 
-El `pom.xml` configura Java 21 y copia las dependencias de ejecución a `target/libs` durante `mvn package`. La clase `Launcher` es el punto de entrada para el empaquetado modular con `jpackage`.
+El `pom.xml` configura Java 21 y copia las dependencias de ejecución a `target/libs` durante `mvn package`. La clase `Launcher` es el punto de entrada para el empaquetado modular con `jpackage`. El icono de la ventana está en `img/logo.png` y el del instalador en `img/icono.ico`.
 
-Para crear posteriormente un instalador de Windows se necesita WiX Toolset 3.14, con `candle.exe` y `light.exe` disponibles en el `PATH`.
+Para generar el instalador se necesita JDK 21, Maven y WiX Toolset 3.14. `JAVA_HOME` debe apuntar al JDK 21, y Maven y los ejecutables `candle.exe` y `light.exe` de WiX deben estar disponibles en el `PATH`.
+
+Desde la raíz del proyecto, ejecutar en PowerShell:
+
+```powershell
+mvn clean package
+
+& "$env:JAVA_HOME\bin\jpackage.exe" `
+    --type exe `
+    --name "FitLab" `
+    --app-version "1.0.0" `
+    --vendor "FitLab" `
+    --icon "src/main/resources/pe/edu/upeu/fitlab_final/img/icono.ico" `
+    --module-path "target/fitlab_final-1.0-SNAPSHOT.jar;target/libs" `
+    --module "pe.edu.upeu.fitlab_final/pe.edu.upeu.fitlab_final.Launcher" `
+    --win-shortcut `
+    --win-menu `
+    --win-menu-group "FitLab" `
+    --dest target/dist
+```
+
+El resultado es `target/dist/FitLab-1.0.0.exe`, con Java 21 incluido y accesos directos para el escritorio y el menú Inicio. La carpeta `target` contiene archivos generados y está excluida de Git. Para distribuir la aplicación basta con entregar el instalador.
 
 ## Estructura del código
 
@@ -124,9 +162,10 @@ fitlab_final/
 │   ├── implementacion/   Implementaciones de los DAO
 │   ├── interfaces/       Interfaces de acceso a datos
 │   ├── modelo/           Clases del modelo
-│   ├── test/             Pruebas con la base de datos real
+│   ├── test/             Pruebas manuales de los DAO y la conexión
 │   └── utils/            Conexión y utilidades
 ├── src/main/resources/pe/edu/upeu/fitlab_final/
+│   ├── img/              Iconos de la aplicación y del instalador
 │   └── views/            Archivos FXML y estilos CSS
 ├── iniciar.bat
 ├── sqlite_comando.txt    Referencia del esquema de la base de datos
