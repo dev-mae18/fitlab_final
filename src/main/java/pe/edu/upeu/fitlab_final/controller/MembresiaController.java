@@ -217,16 +217,13 @@ public class MembresiaController {
             return;
         }
         if (elegida != solo) return;
-        Boolean conservarVigencia = elegirVigencia(m);
-        if (conservarVigencia == null) return;
-        Plan planActual = m.getPlan();
-        if (!conservarVigencia) {
-            planActual = planDao.searchById(m.getPlan().getIdplan());
-            if (planActual == null) {
-                informar("Plan no disponible", "No se pudo consultar el precio actual del plan.");
-                return;
-            }
+        Plan planActual = planDao.searchById(m.getPlan().getIdplan());
+        if (planActual == null) {
+            informar("Plan no disponible", "No se pudo consultar el precio actual del plan.");
+            return;
         }
+        Boolean conservarVigencia = elegirVigencia(m, planActual);
+        if (conservarVigencia == null) return;
         LocalDate inicio = conservarVigencia ? m.getFechaInicio() : LocalDate.now();
         LocalDate vencimiento = conservarVigencia ? m.getFechaVencimiento() : inicio.plusDays((long) planActual.getDuracionDias() * m.getMeses());
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -240,7 +237,7 @@ public class MembresiaController {
         resultado(reactivada, reactivada ? "Membresía reactivada." + detalleComprobante(m) : "", "No se pudo reactivar la membresía. Compruebe los cupos de sus días de asistencia y el turno del entrenador, y vuelva a intentarlo.");
     }
 
-    private Boolean elegirVigencia(Membresia m) {
+    private Boolean elegirVigencia(Membresia m, Plan planActual) {
         LocalDate hoy = LocalDate.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         ButtonType conservar = new ButtonType("Conservar vigencia original", ButtonBar.ButtonData.OTHER);
@@ -249,7 +246,7 @@ public class MembresiaController {
         dialog.initOwner(tableMembresia.getScene().getWindow());
         dialog.setTitle("Vigencia de reactivación");
         dialog.setHeaderText("Elija la vigencia de la membresía");
-        String texto = "Vigencia original: " + m.getFechaInicio().format(formato) + " – " + m.getFechaVencimiento().format(formato) + ".\nDesde hoy: " + hoy.format(formato) + " – " + hoy.plusDays((long) m.getDuracionDiasPlan() * m.getMeses()).format(formato) + ".";
+        String texto = "Vigencia original: " + m.getFechaInicio().format(formato) + " – " + m.getFechaVencimiento().format(formato) + ".\nDesde hoy: " + hoy.format(formato) + " – " + hoy.plusDays((long) planActual.getDuracionDias() * m.getMeses()).format(formato) + ".";
         boolean vencida = m.getFechaVencimiento().isBefore(hoy);
         if (vencida) texto += "\n\nLa vigencia original ya venció. Puede iniciar desde hoy o cancelar para elegir una nueva membresía.";
         Label fechas = new Label(texto);
