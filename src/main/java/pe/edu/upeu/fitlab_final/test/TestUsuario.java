@@ -13,6 +13,9 @@ public class TestUsuario {
             System.out.println("LOGIN CORRECTO");
             System.out.println("ID_USUARIO: " + usuario.getIdusuario());
             System.out.println("USUARIO: " + usuario.getUsuario());
+            System.out.println("NOMBRE: " + usuario.getNombre());
+            System.out.println("APELLIDOS: " + usuario.getApellidos());
+            System.out.println("DNI: " + usuario.getDni());
         } else {
             System.out.println("Usuario o contraseña incorrectos");
         }

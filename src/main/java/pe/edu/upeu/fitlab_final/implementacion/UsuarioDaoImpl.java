@@ -9,7 +9,7 @@ public class UsuarioDaoImpl implements IUsuarioDao {
     @Override
     public Usuario login(String usuario, String contrasena) {
         Usuario e = null;
-        String query = "SELECT idusuario,usuario FROM usuarios WHERE usuario=? AND contrasena=? AND activo=1";
+        String query = "SELECT idusuario,usuario,nombre,apellidos,dni FROM usuarios WHERE usuario=? AND contrasena=? AND activo=1";
         try (Connection cn = ConexionDB.getConnection(); PreparedStatement st = cn.prepareStatement(query)) {
             st.setString(1, usuario);
             st.setString(2, contrasena);
@@ -18,6 +18,9 @@ public class UsuarioDaoImpl implements IUsuarioDao {
                     e = new Usuario();
                     e.setIdusuario(rs.getInt("idusuario"));
                     e.setUsuario(rs.getString("usuario"));
+                    e.setNombre(rs.getString("nombre"));
+                    e.setApellidos(rs.getString("apellidos"));
+                    e.setDni(rs.getString("dni"));
                 }
             }
         } catch (SQLException ex) {
