@@ -9,6 +9,7 @@ import pe.edu.upeu.fitlab_final.modelo.Cliente;
 import pe.edu.upeu.fitlab_final.modelo.Comprobante;
 import pe.edu.upeu.fitlab_final.modelo.Entrenador;
 import pe.edu.upeu.fitlab_final.modelo.Membresia;
+import pe.edu.upeu.fitlab_final.utils.UtilTablas;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -60,7 +61,8 @@ public class ClienteDatosController {
                 setText(empty || item == null ? null : String.format("S/ %.2f", item.doubleValue()));
             }
         });
-        tableComprobantes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        UtilTablas.ajustarTexto(colTipo);
+        UtilTablas.ajustarColumnas(tableComprobantes);
     }
 
     public void setDatos(Cliente cliente, Membresia membresia, List<Comprobante> comprobantes) {

@@ -632,10 +632,11 @@ public class MembresiaDaoImpl implements IMembresiaDao {
     }
 
     private boolean aforoDisponible(Connection cn, Membresia e) throws SQLException {
-        String query = "SELECT COUNT(*) FROM membresias WHERE activa=1 AND horario=? AND idmembresia<>? AND (tipoDias='TODOS' OR instr('-'||tipoDias||'-','-'||?||'-')>0)";
+        String query = "SELECT COUNT(*) FROM membresias WHERE activa=1 AND horario=? AND idmembresia<>? AND (tipoDias='TODOS' OR instr('-'||tipoDias||'-','-'||?||'-')>0) AND fechaVencimiento>=?";
         try (PreparedStatement st = cn.prepareStatement(query)) {
             st.setString(1, e.getHorario());
             st.setInt(2, e.getIdmembresia());
+            st.setString(4, LocalDate.now().toString());
             for (String dia : e.getDiasAsistencia()) {
                 st.setString(3, dia);
                 try (ResultSet rs = st.executeQuery()) {

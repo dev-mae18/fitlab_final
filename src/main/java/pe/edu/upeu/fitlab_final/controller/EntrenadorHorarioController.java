@@ -1,6 +1,5 @@
 package pe.edu.upeu.fitlab_final.controller;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -12,6 +11,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pe.edu.upeu.fitlab_final.modelo.Entrenador;
 import pe.edu.upeu.fitlab_final.modelo.Membresia;
+import pe.edu.upeu.fitlab_final.utils.UtilTablas;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -60,33 +60,10 @@ public class EntrenadorHorarioController {
                 }
             }
         });
-        configurarTextoAjustado(colSocio);
-        configurarTextoAjustado(colPlan);
-        configurarTextoAjustado(colDias);
-        tableSocios.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-    }
-
-    private void configurarTextoAjustado(TableColumn<Membresia, String> columna) {
-        columna.setCellFactory(c -> new TableCell<>() {
-            private final Label etiqueta = new Label();
-
-            {
-                etiqueta.setWrapText(true);
-                etiqueta.setMinHeight(Label.USE_PREF_SIZE);
-                etiqueta.prefWidthProperty().bind(columna.widthProperty().subtract(16));
-                prefHeightProperty().bind(Bindings.createDoubleBinding(
-                        () -> Math.max(39, etiqueta.prefHeight(Math.max(1, columna.getWidth() - 16)) + 12),
-                        etiqueta.textProperty(), etiqueta.fontProperty(), columna.widthProperty()));
-            }
-
-            @Override
-            protected void updateItem(String texto, boolean empty) {
-                super.updateItem(texto, empty);
-                setText(null);
-                etiqueta.setText(empty ? null : texto);
-                setGraphic(empty || texto == null ? null : etiqueta);
-            }
-        });
+        UtilTablas.ajustarTexto(colSocio);
+        UtilTablas.ajustarTexto(colPlan);
+        UtilTablas.ajustarTexto(colDias);
+        UtilTablas.ajustarColumnas(tableSocios);
     }
 
     public void setDatos(Entrenador entrenador, List<Membresia> asignados) {

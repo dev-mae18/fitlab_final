@@ -23,7 +23,7 @@
 .table-view { -fx-background-color: white; -fx-border-color: #dde7e9; -fx-border-radius: 6; }
 .table-view .column-header-background { -fx-background-color: #e9f0f1; }
 .table-view .column-header { -fx-background-color: transparent; -fx-padding: 12 5; }
-.table-row-cell { -fx-cell-size: 39px; }
+.table-row-cell { -fx-cell-size: -1; -fx-min-height: 39px; }
 .table-row-cell:selected { -fx-background-color: #d5eeea; -fx-text-background-color: #164d45; }
 .panel, .stat-card { -fx-background-color: white; -fx-background-radius: 10; -fx-padding: 24; }
 .stat-card { -fx-min-width: 190; }

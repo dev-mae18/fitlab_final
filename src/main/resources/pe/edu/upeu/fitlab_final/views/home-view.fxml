@@ -28,7 +28,7 @@
         <Label text="2. Asigna un plan, horario y entrenador en Membresías."/>
         <Label text="3. Consulta los comprobantes y revisa el aforo en Informes."/>
         <Separator/>
-        <Label text="Planes mensuales: Básico S/ 50 · Premium S/ 80 · VIP S/ 120"/>
-        <Label text="Descuento para estudiantes: 10 % · Duración: 30 días" styleClass="subtitle"/>
+        <Label text="4. Administra los planes y promociones en Configuración." wrapText="true"/>
+        <Label text="Descuento para estudiantes: 10 % · Duración según el plan contratado." styleClass="subtitle" wrapText="true"/>
     </VBox>
 </VBox>

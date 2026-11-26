@@ -24,6 +24,7 @@ import pe.edu.upeu.fitlab_final.modelo.Plan;
 import pe.edu.upeu.fitlab_final.modelo.UserSession;
 import pe.edu.upeu.fitlab_final.modelo.Usuario;
 import pe.edu.upeu.fitlab_final.utils.UtilAlerts;
+import pe.edu.upeu.fitlab_final.utils.UtilTablas;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -79,6 +80,11 @@ public class MembresiaController {
             }
             return new SimpleStringProperty(estado);
         });
+        UtilTablas.ajustarTexto(colCliente);
+        UtilTablas.ajustarTexto(colPlan);
+        UtilTablas.ajustarTexto(colDias);
+        UtilTablas.ajustarTexto(colEntrenador);
+        UtilTablas.ajustarColumnas(tableMembresia);
         cargarDatos();
     }
 

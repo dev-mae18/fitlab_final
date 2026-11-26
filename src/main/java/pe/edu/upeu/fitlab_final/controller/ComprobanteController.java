@@ -9,6 +9,7 @@ import pe.edu.upeu.fitlab_final.implementacion.ComprobanteDaoImpl;
 import pe.edu.upeu.fitlab_final.interfaces.IComprobanteDao;
 import pe.edu.upeu.fitlab_final.modelo.Comprobante;
 import pe.edu.upeu.fitlab_final.utils.UtilAlerts;
+import pe.edu.upeu.fitlab_final.utils.UtilTablas;
 
 public class ComprobanteController {
     @FXML private TableView<Comprobante> tableComprobante;
@@ -55,6 +56,9 @@ public class ComprobanteController {
         configurarMoneda(colSubtotal);
         configurarMoneda(colDescuento);
         configurarMoneda(colTotal);
+        UtilTablas.ajustarTexto(colCliente);
+        UtilTablas.ajustarTexto(colTipo);
+        UtilTablas.ajustarColumnas(tableComprobante);
         cargarDatos();
     }
 

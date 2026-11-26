@@ -13,22 +13,25 @@
         <Button text="Buscar" onAction="#handleSearch"/>
         <Button text="Nueva membresía" onAction="#handleNew" styleClass="primary"/>
     </HBox>
-    <TableView fx:id="tableMembresia" VBox.vgrow="ALWAYS">
+    <TableView fx:id="tableMembresia" minWidth="0" VBox.vgrow="ALWAYS">
         <placeholder>
             <Label text="No hay membresías para mostrar."/>
         </placeholder>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS"/>
+        </columnResizePolicy>
         <columns>
-            <TableColumn fx:id="colNumero" text="N°" prefWidth="50"/>
-            <TableColumn fx:id="colCliente" text="Socio" prefWidth="170"/>
-            <TableColumn fx:id="colDni" text="DNI" prefWidth="100"/>
-            <TableColumn fx:id="colPlan" text="Plan" prefWidth="95"/>
-            <TableColumn fx:id="colPrecio" text="Precio/mes" prefWidth="100"/>
-            <TableColumn fx:id="colTiempo" text="Tiempo" prefWidth="85"/>
-            <TableColumn fx:id="colHorario" text="Horario" prefWidth="90"/>
-            <TableColumn fx:id="colDias" text="Días de asistencia" prefWidth="200"/>
-            <TableColumn fx:id="colEntrenador" text="Entrenador" prefWidth="160"/>
-            <TableColumn fx:id="colVencimiento" text="Vencimiento" prefWidth="110"/>
-            <TableColumn fx:id="colEstado" text="Estado" prefWidth="95"/>
+            <TableColumn fx:id="colNumero" text="N°" prefWidth="44" minWidth="42" maxWidth="60"/>
+            <TableColumn fx:id="colCliente" text="Socio" prefWidth="235" minWidth="120"/>
+            <TableColumn fx:id="colDni" text="DNI" prefWidth="105" minWidth="95" maxWidth="120"/>
+            <TableColumn fx:id="colPlan" text="Plan" prefWidth="155" minWidth="90"/>
+            <TableColumn fx:id="colPrecio" text="Precio/mes" prefWidth="115" minWidth="90"/>
+            <TableColumn fx:id="colTiempo" text="Tiempo" prefWidth="85" minWidth="70" maxWidth="105"/>
+            <TableColumn fx:id="colHorario" text="Horario" prefWidth="95" minWidth="80" maxWidth="110"/>
+            <TableColumn fx:id="colDias" text="Días de asistencia" prefWidth="225" minWidth="130"/>
+            <TableColumn fx:id="colEntrenador" text="Entrenador" prefWidth="235" minWidth="120"/>
+            <TableColumn fx:id="colVencimiento" text="Vencimiento" prefWidth="125" minWidth="105"/>
+            <TableColumn fx:id="colEstado" text="Estado" prefWidth="105" minWidth="85" maxWidth="120"/>
         </columns>
     </TableView>
     <FlowPane hgap="10" vgap="10">

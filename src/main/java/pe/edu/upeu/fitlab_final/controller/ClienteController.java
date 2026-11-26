@@ -18,6 +18,7 @@ import pe.edu.upeu.fitlab_final.interfaces.IComprobanteDao;
 import pe.edu.upeu.fitlab_final.interfaces.IMembresiaDao;
 import pe.edu.upeu.fitlab_final.modelo.Cliente;
 import pe.edu.upeu.fitlab_final.utils.UtilAlerts;
+import pe.edu.upeu.fitlab_final.utils.UtilTablas;
 import java.io.IOException;
 
 public class ClienteController {
@@ -58,6 +59,9 @@ public class ClienteController {
                 setText(empty || item == null ? null : item ? "Sí" : "No");
             }
         });
+        UtilTablas.ajustarTexto(colNombre);
+        UtilTablas.ajustarTexto(colApellidos);
+        UtilTablas.ajustarColumnas(tableCliente);
         cargarDatos();
     }
 

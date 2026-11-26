@@ -2,12 +2,9 @@ package pe.edu.upeu.fitlab_final.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -42,10 +39,6 @@ public class ConexionDB {
                     throw new IOException("No se pudo crear la carpeta de la base de datos: " + directory);
                 }
                 Class.forName("org.sqlite.JDBC");
-                String rutaConfigurada = System.getProperty("fitlab.db.path");
-                if ((rutaConfigurada == null || rutaConfigurada.isBlank()) && !Files.exists(ruta)) {
-                    migrarBaseAnterior(Path.of("C:/sqlite/db/fitlab.db"), ruta);
-                }
                 String url = "jdbc:sqlite:" + ruta;
                 connection = DriverManager.getConnection(url);
                 try (Statement stmt = connection.createStatement()) {
@@ -155,8 +148,6 @@ public class ConexionDB {
                 stmt.execute(sqlIndiceAforo);
                 stmt.execute(sqlIndiceComprobantes);
 
-                actualizarEstructura();
-
                 stmt.executeUpdate("INSERT INTO usuarios(usuario, contrasena, activo) " +
                         "SELECT 'admin', 'admin123', 1 WHERE NOT EXISTS (SELECT 1 FROM usuarios)");
                 boolean sinPlanes;
@@ -180,64 +171,4 @@ public class ConexionDB {
         }
     }
 
-    private static void actualizarEstructura() throws SQLException {
-        try (Statement stmt = connection.createStatement()) {
-            if (!existeColumna("usuarios", "nombre")) {
-                stmt.execute("ALTER TABLE usuarios ADD COLUMN nombre TEXT NOT NULL DEFAULT ''");
-            }
-            if (!existeColumna("usuarios", "apellidos")) {
-                stmt.execute("ALTER TABLE usuarios ADD COLUMN apellidos TEXT NOT NULL DEFAULT ''");
-            }
-            if (!existeColumna("usuarios", "dni")) {
-                stmt.execute("ALTER TABLE usuarios ADD COLUMN dni TEXT NOT NULL DEFAULT ''");
-            }
-            if (!existeColumna("planes", "meses")) {
-                stmt.execute("ALTER TABLE planes ADD COLUMN meses INTEGER NOT NULL DEFAULT 1 CHECK (meses BETWEEN 1 AND 12)");
-            }
-            if (!existeColumna("planes", "promocion")) {
-                stmt.execute("ALTER TABLE planes ADD COLUMN promocion INTEGER NOT NULL DEFAULT 0 CHECK (promocion IN (0, 1))");
-            }
-            if (!existeColumna("membresias", "precioMensual")) {
-                stmt.execute("ALTER TABLE membresias ADD COLUMN precioMensual REAL CHECK (precioMensual > 0)");
-            }
-            if (!existeColumna("membresias", "duracionDiasPlan")) {
-                stmt.execute("ALTER TABLE membresias ADD COLUMN duracionDiasPlan INTEGER CHECK (duracionDiasPlan > 0)");
-            }
-            stmt.executeUpdate("UPDATE membresias SET precioMensual=" +
-                    "(SELECT CASE WHEN p.promocion=1 THEN p.precio/p.meses ELSE p.precio END " +
-                    "FROM planes p WHERE p.idplan=membresias.idplan) WHERE precioMensual IS NULL");
-            stmt.executeUpdate("UPDATE membresias SET duracionDiasPlan=" +
-                    "(SELECT p.duracionDias FROM planes p WHERE p.idplan=membresias.idplan) WHERE duracionDiasPlan IS NULL");
-        }
-    }
-
-    private static boolean existeColumna(String tabla, String columna) throws SQLException {
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery("PRAGMA table_info(" + tabla + ")")) {
-            while (rs.next()) {
-                if (columna.equalsIgnoreCase(rs.getString("name"))) return true;
-            }
-        }
-        return false;
-    }
-
-    private static void migrarBaseAnterior(Path origen, Path destino) throws SQLException, IOException {
-        if (!Files.isRegularFile(origen) || Files.exists(destino)) return;
-        Path temporal = Files.createTempFile(destino.getParent(), "fitlab-migracion-", ".db");
-        try {
-            String url = "jdbc:sqlite:" + origen.toAbsolutePath().toUri() + "?mode=ro";
-            try (Connection anterior = DriverManager.getConnection(url);
-                 PreparedStatement copia = anterior.prepareStatement("VACUUM INTO ?")) {
-                copia.setString(1, temporal.toAbsolutePath().toString());
-                copia.execute();
-            }
-            try {
-                Files.move(temporal, destino);
-            } catch (FileAlreadyExistsException e) {
-                if (!Files.isRegularFile(destino)) throw e;
-            }
-        } finally {
-            Files.deleteIfExists(temporal);
-        }
-    }
 }

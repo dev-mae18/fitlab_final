@@ -57,11 +57,13 @@ En un plan mensual se registra el precio por mes. En una promoción se registra 
 
 Las membresías guardan su precio y duración contratados, de modo que editar el catálogo no cambia sus importes anteriores. Las nuevas contrataciones y renovaciones utilizan los precios vigentes. Un plan que ya tenga membresías permite editar su nombre y precio; para ofrecer otro tipo o duración se crea un plan nuevo.
 
-### Migración de la ubicación anterior
+### Creación y reutilización
 
-Si la nueva base todavía no existe y se encuentra `C:\sqlite\db\fitlab.db`, FitLab copia automáticamente esa base a la nueva ubicación. La migración conserva sus registros y credenciales, sin sobrescribir ni borrar el archivo original.
+Si la carpeta o el archivo de la base no existen, FitLab crea la carpeta del usuario y SQLite genera `fitlab.db`. El método `initDatabase()` prepara las tablas y los datos iniciales.
 
-FitLab solo importa la base anterior cuando no existe el archivo de destino. Si se borra la base nueva y la antigua sigue presente, volverá a importarla al abrir. Los datos iniciales no sustituyen usuarios, contraseñas ni planes existentes.
+Si la base ya existe, FitLab utiliza sus registros y credenciales. Las bases existentes deben tener el esquema actual definido en `sqlite_comando.txt`. Los datos iniciales se insertan únicamente cuando las tablas de usuarios o planes están vacías.
+
+Las membresías vencidas dejan de contar como activas y de ocupar cupo. Las que vencen en la fecha actual mantienen su vigencia durante ese día.
 
 ### Desinstalación
 
@@ -69,7 +71,7 @@ El desinstalador elimina el programa, el Java incluido y sus accesos directos. L
 
 ### Ruta alternativa para pruebas
 
-La propiedad Java opcional `-Dfitlab.db.path=RUTA_DEL_ARCHIVO` permite usar otra base, por ejemplo en pruebas aisladas. Al indicar esta propiedad no se importa automáticamente la base de `C:\sqlite\db`; se prepara únicamente el archivo elegido. `sqlite_comando.txt` se conserva como referencia del esquema.
+La propiedad Java opcional `-Dfitlab.db.path=RUTA_DEL_ARCHIVO` permite usar otra base, por ejemplo en pruebas aisladas. Al indicarla, se prepara únicamente el archivo elegido. `sqlite_comando.txt` se conserva como referencia del esquema.
 
 ## Credenciales de acceso
 
@@ -78,7 +80,7 @@ Usuario: admin
 Contraseña: admin123
 ```
 
-Estas credenciales corresponden a una base nueva y vacía. Si se migró una base anterior, se mantienen sus credenciales, incluida cualquier contraseña que ya se hubiera cambiado.
+Estas credenciales corresponden a una base nueva y vacía. Si ya existe una base, se mantienen sus credenciales, incluida cualquier contraseña que ya se hubiera cambiado.
 
 ## Requisitos
 
@@ -100,7 +102,7 @@ Para ejecutar el código fuente:
 3. Completar la instalación. La carpeta predeterminada es `C:\Program Files\FitLab`.
 4. Abrir FitLab desde el escritorio o el menú Inicio.
 
-La base de datos se prepara automáticamente al abrir el programa. Las credenciales `admin / admin123` corresponden a una base nueva; una base existente o importada conserva sus credenciales.
+La base de datos se prepara automáticamente al abrir el programa. Las credenciales `admin / admin123` corresponden a una base nueva; una base existente conserva sus credenciales.
 
 ### Desde IntelliJ IDEA
 

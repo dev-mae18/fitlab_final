@@ -30,17 +30,20 @@
             <Button fx:id="btnBuscar" text="Buscar" onAction="#handleSearch"/>
             <Button fx:id="btnNuevoPlan" text="Nuevo plan" onAction="#handleNew" styleClass="primary"/>
         </HBox>
-        <TableView fx:id="tablePlanes" VBox.vgrow="ALWAYS" minHeight="140">
+        <TableView fx:id="tablePlanes" minWidth="0" VBox.vgrow="ALWAYS" minHeight="140">
             <placeholder>
                 <Label text="No hay planes para mostrar. Puede crear uno con Nuevo plan." styleClass="configuracion-caption" wrapText="true"/>
             </placeholder>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS"/>
+            </columnResizePolicy>
             <columns>
-                <TableColumn fx:id="colNumero" text="N°" prefWidth="48" minWidth="45" maxWidth="60"/>
-                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200" minWidth="120"/>
-                <TableColumn fx:id="colTipo" text="Tipo" prefWidth="110" minWidth="100"/>
-                <TableColumn fx:id="colDuracion" text="Duración" prefWidth="150" minWidth="125"/>
-                <TableColumn fx:id="colPrecio" text="Precio" prefWidth="165" minWidth="140"/>
-                <TableColumn fx:id="colEquivalente" text="Equivalente mensual" prefWidth="160" minWidth="145"/>
+                <TableColumn fx:id="colNumero" text="N°" prefWidth="44" minWidth="42" maxWidth="60"/>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="300" minWidth="160"/>
+                <TableColumn fx:id="colTipo" text="Tipo" prefWidth="110" minWidth="100" maxWidth="130"/>
+                <TableColumn fx:id="colDuracion" text="Duración" prefWidth="165" minWidth="140"/>
+                <TableColumn fx:id="colPrecio" text="Precio" prefWidth="190" minWidth="150"/>
+                <TableColumn fx:id="colEquivalente" text="Equivalente mensual" prefWidth="180" minWidth="150"/>
             </columns>
         </TableView>
         <HBox alignment="CENTER_LEFT" spacing="18">

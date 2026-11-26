@@ -125,16 +125,19 @@
                     <VBox spacing="12" styleClass="detalle-card">
                         <Label text="Comprobantes" styleClass="section-title"/>
                         <Label fx:id="lblComprobantes" text="0 comprobantes registrados" styleClass="detalle-nota"/>
-                        <TableView fx:id="tableComprobantes" prefHeight="240" minHeight="180">
+                        <TableView fx:id="tableComprobantes" minWidth="0" prefHeight="240" minHeight="180">
                             <placeholder>
                                 <Label text="No tiene comprobantes registrados." styleClass="detalle-nota" wrapText="true"/>
                             </placeholder>
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS"/>
+                            </columnResizePolicy>
                             <columns>
-                                <TableColumn fx:id="colCodigo" text="Código" prefWidth="110" minWidth="85"/>
-                                <TableColumn fx:id="colTipo" text="Operación" prefWidth="125" minWidth="100"/>
-                                <TableColumn fx:id="colEstado" text="Estado" prefWidth="95" minWidth="80"/>
-                                <TableColumn fx:id="colFecha" text="Fecha" prefWidth="190" minWidth="160"/>
-                                <TableColumn fx:id="colTotal" text="Total" prefWidth="110" minWidth="100"/>
+                                <TableColumn fx:id="colCodigo" text="Código" prefWidth="115" minWidth="100"/>
+                                <TableColumn fx:id="colTipo" text="Operación" prefWidth="145" minWidth="105"/>
+                                <TableColumn fx:id="colEstado" text="Estado" prefWidth="105" minWidth="95" maxWidth="120"/>
+                                <TableColumn fx:id="colFecha" text="Fecha" prefWidth="215" minWidth="170"/>
+                                <TableColumn fx:id="colTotal" text="Total" prefWidth="115" minWidth="105"/>
                             </columns>
                         </TableView>
                     </VBox>

@@ -37,9 +37,9 @@ public class InformeController {
         LocalDate hoy = LocalDate.now();
         int porVencer = 0;
         for (Membresia membresia : membresias) {
-            if (membresia.isActiva()) {
+            if (membresia.isActiva() && !membresia.getFechaVencimiento().isBefore(hoy)) {
                 activas.add(membresia);
-                if (!membresia.getFechaVencimiento().isBefore(hoy) && !membresia.getFechaVencimiento().isAfter(hoy.plusDays(3))) porVencer++;
+                if (!membresia.getFechaVencimiento().isAfter(hoy.plusDays(3))) porVencer++;
             }
         }
         lblActivas.setText(String.valueOf(activas.size()));

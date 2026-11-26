@@ -21,7 +21,7 @@
                     <Label text="Con cupo asignado" styleClass="informe-card-detail"/>
                 </VBox>
                 <VBox spacing="8" prefWidth="190" minWidth="165" maxWidth="Infinity" minHeight="126" HBox.hgrow="ALWAYS" styleClass="informe-card">
-                    <Label text="Membresías inactivas" styleClass="informe-card-caption"/>
+                    <Label text="Inactivas o vencidas" styleClass="informe-card-caption"/>
                     <Label fx:id="lblInactivas" text="0" styleClass="informe-card-value,informe-value-muted"/>
                     <Label text="Sin ocupar cupo" styleClass="informe-card-detail"/>
                 </VBox>

@@ -12,18 +12,21 @@
         <Button text="Buscar" onAction="#handleSearch"/>
         <Button text="Nuevo" onAction="#handleNew" styleClass="primary"/>
     </HBox>
-    <TableView fx:id="tableCliente" VBox.vgrow="ALWAYS">
+    <TableView fx:id="tableCliente" minWidth="0" VBox.vgrow="ALWAYS">
         <placeholder>
             <Label text="No hay registros para mostrar."/>
         </placeholder>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS"/>
+        </columnResizePolicy>
         <columns>
-            <TableColumn fx:id="colNumero" text="N°" prefWidth="60"/>
-            <TableColumn fx:id="colNombre" text="Nombres" prefWidth="160"/>
-            <TableColumn fx:id="colApellidos" text="Apellidos" prefWidth="160"/>
-            <TableColumn fx:id="colDni" text="DNI" prefWidth="110"/>
-            <TableColumn fx:id="colEdad" text="Edad" prefWidth="65"/>
-            <TableColumn fx:id="colGenero" text="Género" prefWidth="75"/>
-            <TableColumn fx:id="colEstudiante" text="Estudiante" prefWidth="100"/>
+            <TableColumn fx:id="colNumero" text="N°" prefWidth="44" minWidth="42" maxWidth="60"/>
+            <TableColumn fx:id="colNombre" text="Nombres" prefWidth="230" minWidth="160"/>
+            <TableColumn fx:id="colApellidos" text="Apellidos" prefWidth="260" minWidth="160"/>
+            <TableColumn fx:id="colDni" text="DNI" prefWidth="105" minWidth="95" maxWidth="120"/>
+            <TableColumn fx:id="colEdad" text="Edad" prefWidth="60" minWidth="55" maxWidth="80"/>
+            <TableColumn fx:id="colGenero" text="Género" prefWidth="80" minWidth="70" maxWidth="95"/>
+            <TableColumn fx:id="colEstudiante" text="Estudiante" prefWidth="105" minWidth="100" maxWidth="120"/>
         </columns>
     </TableView>
     <HBox spacing="10" alignment="CENTER_RIGHT">

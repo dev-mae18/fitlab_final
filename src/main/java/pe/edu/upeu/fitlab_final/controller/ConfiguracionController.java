@@ -16,6 +16,7 @@ import pe.edu.upeu.fitlab_final.interfaces.IPlanDao;
 import pe.edu.upeu.fitlab_final.modelo.Plan;
 import pe.edu.upeu.fitlab_final.modelo.UserSession;
 import pe.edu.upeu.fitlab_final.utils.UtilAlerts;
+import pe.edu.upeu.fitlab_final.utils.UtilTablas;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -69,7 +70,9 @@ public class ConfiguracionController {
         });
         colPrecio.setCellValueFactory(c -> new SimpleStringProperty(String.format("S/ %.2f", c.getValue().getPrecio()) + (c.getValue().isPromocion() ? " / paquete" : " / mes")));
         colEquivalente.setCellValueFactory(c -> new SimpleStringProperty(String.format("S/ %.2f / mes", c.getValue().getPrecioMensual())));
-        tablePlanes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        UtilTablas.ajustarTexto(colNombre);
+        UtilTablas.ajustarTexto(colDuracion);
+        UtilTablas.ajustarColumnas(tablePlanes);
         cargarDatos();
     }
 

@@ -12,17 +12,20 @@
         <Button text="Buscar" onAction="#handleSearch"/>
         <Button text="Nuevo" onAction="#handleNew" styleClass="primary"/>
     </HBox>
-    <TableView fx:id="tableEntrenador" VBox.vgrow="ALWAYS">
+    <TableView fx:id="tableEntrenador" minWidth="0" VBox.vgrow="ALWAYS">
         <placeholder>
             <Label text="No hay registros para mostrar."/>
         </placeholder>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS"/>
+        </columnResizePolicy>
         <columns>
-            <TableColumn fx:id="colNumero" text="N°" prefWidth="60"/>
-            <TableColumn fx:id="colNombre" text="Nombres" prefWidth="160"/>
-            <TableColumn fx:id="colApellidos" text="Apellidos" prefWidth="160"/>
-            <TableColumn fx:id="colDni" text="DNI" prefWidth="110"/>
-            <TableColumn fx:id="colEspecialidad" text="Especialidad" prefWidth="180"/>
-            <TableColumn fx:id="colTurno" text="Turno" prefWidth="110"/>
+            <TableColumn fx:id="colNumero" text="N°" prefWidth="44" minWidth="42" maxWidth="60"/>
+            <TableColumn fx:id="colNombre" text="Nombres" prefWidth="220" minWidth="160"/>
+            <TableColumn fx:id="colApellidos" text="Apellidos" prefWidth="245" minWidth="160"/>
+            <TableColumn fx:id="colDni" text="DNI" prefWidth="105" minWidth="95" maxWidth="120"/>
+            <TableColumn fx:id="colEspecialidad" text="Especialidad" prefWidth="240" minWidth="155"/>
+            <TableColumn fx:id="colTurno" text="Turno" prefWidth="95" minWidth="85" maxWidth="115"/>
         </columns>
     </TableView>
     <HBox spacing="10" alignment="CENTER_RIGHT">

@@ -18,6 +18,7 @@ import pe.edu.upeu.fitlab_final.interfaces.IMembresiaDao;
 import pe.edu.upeu.fitlab_final.modelo.Entrenador;
 import pe.edu.upeu.fitlab_final.modelo.Membresia;
 import pe.edu.upeu.fitlab_final.utils.UtilAlerts;
+import pe.edu.upeu.fitlab_final.utils.UtilTablas;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,10 @@ public class EntrenadorController {
         colDni.setCellValueFactory(c -> c.getValue().dniProperty());
         colEspecialidad.setCellValueFactory(c -> c.getValue().especialidadProperty());
         colTurno.setCellValueFactory(c -> new SimpleStringProperty(Entrenador.describirTurno(c.getValue().getTurno())));
+        UtilTablas.ajustarTexto(colNombre);
+        UtilTablas.ajustarTexto(colApellidos);
+        UtilTablas.ajustarTexto(colEspecialidad);
+        UtilTablas.ajustarColumnas(tableEntrenador);
         cargarDatos();
     }
 

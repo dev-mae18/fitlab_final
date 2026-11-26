@@ -9,6 +9,7 @@ import pe.edu.upeu.fitlab_final.interfaces.IClienteDao;
 import pe.edu.upeu.fitlab_final.interfaces.IComprobanteDao;
 import pe.edu.upeu.fitlab_final.interfaces.IMembresiaDao;
 import pe.edu.upeu.fitlab_final.modelo.Membresia;
+import java.time.LocalDate;
 
 public class HomeController {
     @FXML private Label lblClientes;
@@ -22,8 +23,9 @@ public class HomeController {
     public void initialize() {
         lblClientes.setText(String.valueOf(clienteDao.listAll().size()));
         int activas = 0;
+        LocalDate hoy = LocalDate.now();
         for (Membresia membresia : membresiaDao.listAll()) {
-            if (membresia.isActiva()) activas++;
+            if (membresia.isActiva() && !membresia.getFechaVencimiento().isBefore(hoy)) activas++;
         }
         lblMembresias.setText(String.valueOf(activas));
         lblComprobantes.setText(String.valueOf(comprobanteDao.listAll().size()));
